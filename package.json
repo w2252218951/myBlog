@@ -1,0 +1,18 @@
+{
+  "name": "myVuePress",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "vuepress dev docs --open",
+    "build": "vuepress build docs"
+  },
+  "keywords": [],
+  "author": "sans",
+  "license": "ISC",
+  "devDependencies": {
+    "vuepress": "^1.8.2",
+    "vuepress-theme-reco": "^1.6.6"
+  }
+}
