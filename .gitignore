@@ -13,6 +13,6 @@ yarn-error.log*
 *.njsproj
 *.sln
 test.html
+/dist/
 dist.zip
 .history/
-src/pages/financialCharges/transactionRecords/index.vue
