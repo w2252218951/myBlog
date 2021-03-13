@@ -4,7 +4,9 @@ tags:
 - js
 categories:
 - 笔记
-date: 2019-10-14
+- 原型链
+- 对象
+date: 2021-02-26
 ---
 
 ![](https://user-gold-cdn.xitu.io/2018/5/13/1635882f458a9fb2?imageView2/0/w/1280/h/960/format/webp/ignore-error/1)

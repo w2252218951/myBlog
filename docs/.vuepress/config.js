@@ -41,6 +41,7 @@ module.exports = {
                     children: [
                         'Object/understandObject',
                         'Object/createObject',
+                        'Object/extend',
                         'Object/prototype',
                     ]
                 },
