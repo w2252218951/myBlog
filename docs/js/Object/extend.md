@@ -2,10 +2,11 @@
 title: 继承
 tags:
 - js 
+- 对象 
 categories:
 - 笔记
-- 对象 
 date: 2021-03-13
+
 ---
 
 # 继承 p238
@@ -273,20 +274,25 @@ function object(o){
     F.prototype = o;
     return new F();
 }
-// ES6 中通过 object.create()将原型式继承的概念规范化了
-
-
 let person = {
     name: "Nicholas",
     friends: ["Shelby", "Court", "Van"]
 };
-let anotherPerson = person;
+let anotherPerson = object(person);
 anotherPerson.name = "Greg";
 anotherPerson.friends.push("Rob");
-let yetAnotherPerson = person;
+let yetAnotherPerson = object(person);
 yetAnotherPerson.name = "Linda";
 yetAnotherPerson.friends.push("Barbie");
 console.log(person.friends); // "Shelby,Court,Van,Rob,Barbie"
 ```
 
+在`ES5`中 通过`Object.create()`方法，将**原型式继**承概念**规范**化了。
 
+接收两个参数：
+
+1. 作为新对象的原型对象
+
+2. 给新对象定义额外属性的对象（可选）
+
+只有一个参数时，`Object.create()`与上述`object()`方法效果相同

@@ -2,21 +2,21 @@
 title: 理解对象
 tags:
 - js
+- 对象
 categories:
 - 笔记
-- 对象
 date: 2021-02-26
 ---
 
 创建自定义对象的通常的方法是`Object`的一个新实例，然后再给它添加属性和方法。
 
-## 1、属性的类型 p207
+# 1、属性的类型 p207
 
 规范通过两个 **中括号**将内部特性标识出来。例如: [[Enumerable]]
 
 属性分为：**数据属性** 、**访问器属性**
 
-#### 1.1、数据属性
+## 1.1、数据属性
 
 - [[Configurable]]：表示是否可以通过`delete`进行删除并重定义、是否可以修改他的默认属性，以及是否可以将它改变成访问器属性。默认情况下，直接定义在对象上的属性的这个特性为 `true`
 
@@ -58,9 +58,12 @@ console.log(person.name); // sans
 
 非严格模式下没有效果，**严格模式下**抛出错误。 同时： **一旦一个属性别被定义为不可配置后，就不能再变回可配置了。** 通过`Object.defineProperty()`修改任何非`writable`属性都会报错。
 
-<mark>！！！在调用`Object.defineProperty()`时，前三大特性都默认为 `false`。</mark>
+::: tip
 
-#### 1.2、访问器属性
+！！！在调用`Object.defineProperty()`时，前三大特性都默认为 `false`。
+:::
+
+## 1.2、访问器属性
 
 不包含数据值。包含一个获取`getter`函数和一个设置`setter`函数，都是非必须的。
 
@@ -74,9 +77,13 @@ console.log(person.name); // sans
 
 - [[Set]]：设置函数，在写入属性时调用，默认为`unfettered`
 
-<mark>！！！注意：访问器属性时不能够直接定义的，必须使用`Object.defineProperty()`</mark>
+::: tip
 
-**使用场景：** 通过设置一个属性值导致其他值发生变化。
+！！！注意：访问器属性是不能够直接定义的，必须使用`Object.defineProperty()`
+
+:::
+
+<mark>**使用场景：** 通过设置一个属性值导致其他值发生变化。</mark>
 
 ```js
 let book = {
@@ -101,12 +108,20 @@ console.log(book);
 
 ![](C:\Users\14997\AppData\Roaming\marktext\images\2021-02-12-21-53-04-image.png)
 
-只定义获取函数意味着属性是**只读**的，设置属性会被忽略。在严格模式下会只定义获取函数会抛出错误。
+::: tip
+
+只定义获取函数意味着属性是**只读**的，设置属性会被忽略。在**严格模式下**会只定义获取函数会抛出错误。
+
+:::
+
+::: warning
 
 不支持`Object.defineProperty()`的浏览器中没有办法修改[[Configurable]]和[[Enumeralbe]]。并且，在ECMA5以前通过`_defineGetter_()和_defineSetter_()`
 创建访问器属性
 
-### 2、定义多个属性 p208
+:::
+
+# 2、定义多个属性 p208
 
 `Object.defineProperties()`能通过多个描述符一次性定义多个属性。
 
@@ -141,7 +156,7 @@ console.log(book);
 
 ![](C:\Users\14997\AppData\Roaming\marktext\images\2021-02-12-22-17-06-image.png)
 
-### 3、 读取属性的特性 p209
+# 3、 读取属性的特性 p209
 
 通过`Object.getOwnPropertyDescriptor()`可获得指定属性的属性描述符。
 
@@ -207,7 +222,7 @@ console.log(Object.getOwnPropertyDescriptors(book));
 // } 
 ```
 
-### 4、合并对象
+# 4、合并对象
 
 `ECMAScript6`提供了`Object.assign()`作为对象的合并方法。这个方法接收一个目标对象和多个源对象作为参数。
 
@@ -298,7 +313,7 @@ try {
 console.log(dest); // { a: foo }
 ```
 
-### 5、对象标识及相等判定
+# 5、对象标识及相等判定
 
 `console.log({} === {}) // false`
 
@@ -345,9 +360,9 @@ function recursivelyCheckEqual(x, ...rest) {
 }
 ```
 
-### 6、增强的对象语法
+# 6、增强的对象语法
 
-###### 1、属性值的简写
+## 6.1、属性值的简写
 
 ```js
 let name = 'sans';
@@ -382,7 +397,7 @@ let person = makePerson(name);
 console.log(person.name)  // sans 
 ```
 
-###### 2、可计算属性
+## 6.2、可计算属性
 
 引入可计算属性之前，不能够直接在对象字面量中直接动态命名参数。
 
@@ -421,7 +436,7 @@ console.log(person);  // {name_0 : 'sans', age_1: 22}
 
 计算属性任何抛出错误都会中断对象的创建，并且不能够进行回滚。
 
-###### 3、简写方法名
+## 6.3、简写方法名
 
 ```js
 let person = {
@@ -473,7 +488,7 @@ let person = {
 person.sayName('sans'); // sans
 ```
 
-### 7、对象解构 p216
+## 6.4、对象解构 p216
 
 `ECMAScript`**新增**了对象解构语法。简单来说就是使用与**对象匹配的结构**来实行对象属性赋值。
 
@@ -510,13 +525,18 @@ console.log(job);   // undefined
 console.log(level); // 'NB'
 ```
 
-在使用解构时，其实使用`ToObject() 该方法不能再运行时环境直接访问`把源数据转换为对象。也就意味着，`null`和`undefined`**不能够被结构**，会抛出错误。
+::: tip
+
+在使用解构时，其实使用`ToObject() 该方法不能在运行时环境直接访问`把源数据转换为对象。
+也就意味着，`null`和`undefined`**不能够被结构**，会抛出错误。
+
+:::
 
 ```js
 let {length} = 'sans'
-// 相当于 { sans.length: length}
+// 相当于 { length: length} = 'sans' 将字符串的长度进行赋值
 console.log(length); // 4
-
+// 数字的构造函数是 Number()
 let {constructor: c} = 4,
     num = 4;
 console.log(num.constructor); // Number()
@@ -529,7 +549,7 @@ let {length: _} = 'sans';
 console.log(_); // 4
 ```
 
-如果要给事先声明的变量进行赋值，则赋值表达式必须包含在一对括号中。
+<mark>如果要给事先声明的变量进行赋值，则赋值表达式必须包含在一对括号中。</mark>
 
 ```js
 let personName, personAge;
@@ -541,7 +561,7 @@ let person = {
 console.log(personName, personAge); // sans 22
 ```
 
-###### 1、嵌套解构
+### 6.4.1、嵌套解构
 
 ```js
 // 嵌套解构
@@ -616,11 +636,11 @@ console.log(personCopy);
 // {job: {title: 'FE'}}
 ```
 
-###### 2、部分解构
+### 6.4. 2、部分解构
 
 涉及多个属性解构时，开始的赋值成功而后面的错误，则整个解构赋值只会完成一部分。
 
-###### 3、参数上下文匹配
+### 6.4.3、参数上下文匹配
 
 函数列表中的对参数的结构赋值不会影响`arguments`对象，但可以在函数签名中声明在函数体内使用局部变量。
 

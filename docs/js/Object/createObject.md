@@ -2,9 +2,9 @@
 title: 创建对象
 tags:
 - js 
+- 对象
 categories:
 - 笔记
-- 对象
 date: 2021-03-08
 ---
 
@@ -12,15 +12,19 @@ date: 2021-03-08
 
 **缺点**：使用同一个接口**创造多个**对象，会产生大量的代码。
 
-### 1、概述 p220
+# 1、概述 p220
 
 `ECMAScrpit5.1`并没有正式的支持面向对象的结构，比如**类和继承**，但是通过巧妙的运用**原型式继承**可以模仿同样的行为。
 
 `ECMAScript6`开始正式的支持**类和继承**。但是，实际上 `ES6`的类仅仅是封装了`ES5.1`的**构造函数加原型继承**的语法糖。
 
+::: tip
+
 **！！！注意**：**面向对象编程模式**还是应该使用`ES6`的类。 ES6的类定义本身就相当于对原有结构的封装。
 
-### 2、 工厂模式   p221
+:::
+
+# 2、 工厂模式   p221
 
 广泛应用于软件工程领域，用于**抽象创建特定对象**的**过程**。
 
@@ -41,11 +45,11 @@ let person2 = createPerson('sans', 22, 'ds')
 
 工厂模式解决了多个相识对象问题，但没有解决对象的识别问题（即怎么知道一个对象的类型）
 
-### 3 、构造函数模式     p221
+# 3 、构造函数模式     p221
 
 用于创建**特定类型的对象**。
 
-运行时能**直接在执行环境中使用**的都是原生的构造函数
+<mark>运行时能**直接在执行环境中使用**的都是原生的构造函数</mark>
 
 ```js
 function Person(name, age, job){
@@ -61,6 +65,8 @@ let p1 = new Person('hello', 25, 'cxy')
 let p2 = new Person('sans', 22, 'ds')
 ```
 
+::: tip
+
 构造模式和工厂模式的不同：
 
 1. 没有显式的创建对象
@@ -70,8 +76,11 @@ let p2 = new Person('sans', 22, 'ds')
 3. 没有进行return
 
 为了进行区分构造函数始终是以 **大写** 字母开头；因为构造函数本身就是个函数，只不过可以用来创建对象，有助于**区分 构造函数和普通函数**。
+:::
 
-要创建`Person`新   实例，必须使用 **new** 操作符。**注意**：都是被赋值
+::: tip
+
+要创建`Person`新实例，必须使用 **new** 操作符。**注意**：都是被赋值
 
 1. 在内存中创建一个对象；
 
@@ -82,6 +91,8 @@ let p2 = new Person('sans', 22, 'ds')
 4. 执行构造函数中的代码（为新对象添加属性）
 
 5. 如果构造函数返回非空对象，返回该对象；否则，返回新对象； 
+
+:::
 
 p1和p2都有`constructor(构造函数)`属性，该属性都指向 `Person`
 
@@ -130,7 +141,7 @@ console.log(person2 instanceof Person); // true
 
 `let person1 = new Person`
 
-##### 3.1、构造函数也是函数 p223
+### 3.1、构造函数也是函数 p223
 
 <mark>构造函数也是函数</mark>，并没有把某个函数定义为构造函数的特殊语法。**任何函数**只要使用**new**操作符调用**就是构造函数**，而不使用**new**操作符调用的函数就是**普通函数**。<mark>（通过`new` 区分构造函数和普通函数）</mark>
 
@@ -154,7 +165,7 @@ o.sayName()  // lsn
 
 通过`call()和apply()`调用函数，**能够将特定对象指定为作用域**。
 
-##### 3.2、构造函数的问题 p223
+### 3.2、构造函数的问题 p223
 
 **问题：** <mark>定义在构造函数上的方法会在每个实例上都创建一遍。</mark>
 
@@ -199,7 +210,7 @@ person2.sayName()  // hw
 
 此处的构造函数内部的`sayName`属性等于全局的`sayName()`函数。这样虽然**解决了相同逻辑的函数重复定义**的问题，但是全局作用域也以此被搞乱了，因为那个函数实际上只能在一个对象上调用。如果这个对象需要多个方法，那么就要在全局上定义多个函数。这个新的问题可以通过原型模式来解决。
 
-### 4、原型模式 p224
+# 4、原型模式 p224
 
 每个函数都会创建一个`prototype`属性(对象)，包含应由特定引用类型实例共享的属性和方法。
 
@@ -239,7 +250,7 @@ console.log(person1.sayName === person2.sayName); // true
 
 <mark>使用原型模式定义的属性和方法都是由所有实例共享的</mark>
 
-##### 4.1、理解原型 p225
+## 4.1、理解原型 p225
 
 1、**每个函数创建**时，都会按照**特定的规则：**
 
@@ -361,7 +372,7 @@ console.log(Person.prototype.isPrototypeOf(person1)); // true
 console.log(Person.prototype.isPrototypeOf(person2)); // true
 ```
 
-通过`Object.getPrototypeOf()`,可以返回参数的内部特性`[[Prototype]]`的值
+通过`Object.getPrototypeOf()`,可以返回实例的内部特性`[[Prototype]]`的值
 
 `Object.getPrototypeOf`返回的对象是传入参数的原型对象。用来**获取对象**的**原型对象**
 
@@ -415,7 +426,7 @@ console.log(Object.getPrototypeOf(person)); // { num : 2 }
 console.log(Object.getPrototypeOf(person) === biped); // true
 ```
 
-##### 4.2、原型层级 p228
+## 4.2、原型层级 p228
 
 对象访问属性时，**首先会在实例**上查找是否存在该属性，如果存在就返回对应的值，如果不存在，就沿着指针**进入原型对象**，然后在原型对象上返回相对应的值。
 
@@ -476,7 +487,7 @@ console.log(person1.hasOwnProperty('name')); // false
 
 `ECMAScript的 Object.getOwnPropertyDescriptor()`**只对实例属性**有效，要取得原型属性的描述符，就**必须**在**原型对象**上调用`Object.getOwnPropertyDescriptor()`
 
-##### 4.3、原型和in方法 p231
+## 4.3、原型和in方法 p231
 
 在对象中有**两种方式**使用操作符：单独使用和在`for-in`中循环使用。                                         
 
@@ -567,10 +578,10 @@ let p1keys = Object.keys(p1);
 console.log(p1keys); //["name", "age"]
 ```
 
-通过`Object.getOwnPropertyName()` 方法，获取**不可枚举**的**实例属性**。
+通过`Object.getOwnPropertyName()` 方法，同时获取**不可枚举**的**实例属性**。
 
 ```js
-//获取不可枚举的实例属性通过 Object.getOwnPropertyNames()
+//同时获取不可枚举的实例属性通过 Object.getOwnPropertyNames()
 let key1s = Object.getOwnPropertyNames(Person.prototype);
 console.log(key1s); // ["constructor", "name", "age", "asyName"]
 ```
@@ -588,7 +599,7 @@ let o = {
 console.log(Object.getOwnPropertySymbols(o));  //[Symbol(k1), Symbol(k2)]
 ```
 
-##### 4.4、属性枚举顺序
+## 4.4、属性枚举顺序
 
 `for-in循环和Object.keys()`的**枚举顺序**是**不确定**的，**取决于JS引擎**，因浏览器而异
 
@@ -649,7 +660,7 @@ const o = {
 console.log(Object.values(o));
 // [ 23123  {} ]
 console.log(Object.values(o)[1] === o.qux);  // true
-// 将属性转换为字符串
+// 将属性也就是键 转换为字符串
 console.log(Object.entries(o));
 // [ ['1', 23123], ['qux' : {}]
 ```
@@ -667,7 +678,7 @@ console.log(Object.entries((0));
 // []
 ```
 
-##### 5.1、其他原型方法 p234
+## 5.1、其他原型方法 p234
 
 为**减少**代码**冗余**，可以通过**对象字面量**来**重写原型**
 
@@ -695,7 +706,7 @@ Object.defineProperty(Person.prototype, 'constructor', {
 })
 ```
 
-##### 5.2、原型的动态性  p236
+## 5.2、原型的动态性  p236
 
 因为在原型上搜索值的过程是**动态**的，所以即使实例在**原型修改之前**已经存在，**任何时候**对原型对象的**更改**也能**在实例上**反映出来。
 
@@ -743,11 +754,11 @@ Object.defineProperty(Person.prototype,'constructor',{
 friend.sayName()  // 错误
 ```
 
-<img src="file:///C:/Users/14997/AppData/Roaming/marktext/images/2021-03-04-07-48-22-image.png" title="" alt="" data-align="center">
+<img title="" src="file:///C:/Users/14997/AppData/Roaming/marktext/images/2021-03-13-17-00-13-image.png" alt="" data-align="center">
 
 **重写构造函数**上的**原型** **之后**创建的**实例**会**引用新的**原型。而**之前**创建的实例会**引用最初**的原型。
 
-##### 5.3、原生对象原型 p237
+## 5.3、原生对象原型 p237
 
 原型的重要性，不仅体现在其**自定义类型**上，<mark> 而且它还是实现所有**原生引用类型**的模式。</mark>
 
@@ -769,9 +780,13 @@ let msg = "Hello world!";
 console.log(msg.startsWith('Hello')); // true
 ```
 
+::: tip
+
 **!!!注意** **不推荐**在**产品环境中**修改原生对象原型。可能会应发命名冲突。另外可能意外重写原生的方法。推荐： 创建一个自定义的类，**继承原生类型**。
 
-##### 5.4、原型存在的问题
+:::
+
+## 5.4、原型存在的问题 p237
 
 原型**弱化**了向构造函数**传递参数**的能力，会导致所有**实例**默认获得**相同**的值。
 

@@ -1,11 +1,23 @@
 module.exports = {
-    title: 'sans的博客',
-    description: 'this is my first bolg',
+    title: 'Sans_',
+    description: 'stay hungry，stay foolish',
     theme: 'reco',
     host: 'localhost',
     port: 8080,
     themeConfig: {
         type: 'blog',
+        nav: [
+            {text: '主页', link: '/'},
+            {text: '心得', link: '/experience/utils'},
+            {
+                text: '博客', items: [
+                    {text: 'JS', link: '/js/'},
+                    {text: 'HTML', link: '/html'},
+                    {text: 'CSS', link: '/css'},
+                ]
+            },
+            {text: '关于', link: '../about'}
+        ],
         // 博客设置
         blogConfig: {
             category: {
@@ -17,17 +29,6 @@ module.exports = {
                 text: 'Tag' // 默认 “标签”
             }
         },
-        nav: [
-            {text: '主页', link: '/'},
-            {
-                text: '博客', items: [
-                    {text: 'JS', link: '/js/'},
-                    {text: 'HTML', link: '/html'},
-                    {text: 'CSS', link: '/css'},
-                ]
-            },
-            {text: '关于', link: '../about'}
-        ],
         // 自动形成侧边导航
         subSidebar: 'auto',
         sidebar: 'auto',
@@ -45,6 +46,9 @@ module.exports = {
                         'Object/prototype',
                     ]
                 },
+            ],
+            '/experience/': [
+                'utils'
             ]
         },
         // 最后更新时间
