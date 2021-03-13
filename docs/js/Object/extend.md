@@ -1,14 +1,11 @@
 ---
-
 title: 继承
 tags:
-
 - js 
-  categories:
+categories:
 - 笔记
 - 对象 
-  date: 2021-03-13
-
+date: 2021-03-13
 ---
 
 # 继承 p238
