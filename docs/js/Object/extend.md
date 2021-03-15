@@ -371,5 +371,23 @@ anotherPerson.say()  // hi
 本质上，**子类原型**最终要包含**超类对象**的**所有**实例**属性**，子类构造函数只要在执行时重写自己的原型就行了。
 
 ```js
+// 寄生式组合继承
+function SuperType(name){
+    this.name = name;
+    this.colors = ['red','green','blue']
+}
+SuperType.prototype.sayName = function (){
+    console.log(this.name);
+}
 
+// 子类
+function SubType(name, age){
+    SuperType.call(this,name); // 第二次调用SuperType()
+    this.age = age;
+}
+SuperType.prototype = new SuperType() // 第一次调用SuperType()
+SubType.prototype.constructor = SubType;
+SubType.prototype.sayAge = function() {
+    console.log(this.age);
+};
 ```
