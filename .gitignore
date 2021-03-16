@@ -13,6 +13,7 @@ yarn-error.log*
 *.njsproj
 *.sln
 test.html
+dist
 /dist/
 dist.zip
 .history/

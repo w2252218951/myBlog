@@ -6,7 +6,6 @@ tags:
 categories:
 - 笔记
 date: 2021-03-13
-
 ---
 
 面向对象语言都支持两种继承：<mark>接口继承</mark>（只继承方法签名）和<mark>实现继承</mark>（继承实际的方法）
@@ -240,7 +239,7 @@ function SubType(name, age) {
 }
 
 // 继承方法
-SubType.prototype = new SubType();
+SubType.prototype = new SuperType();
 
 SubType.prototype.sayAge = function () {
     console.log(this.age);
@@ -368,7 +367,7 @@ anotherPerson.say()  // hi
 
 2. 在子类构造函数中调用；
 
-本质上，**子类原型**最终要包含**超类对象**的**所有**实例**属性**，子类构造函数只要在执行时重写自己的原型就行了。
+本质上，**子类原型**最终要包含**超类（父类）对象**的**所有**实例**属性**，子类构造函数只要在执行时重写自己的原型就行了。
 
 ```js
 // 寄生式组合继承
@@ -390,4 +389,54 @@ SubType.prototype.constructor = SubType;
 SubType.prototype.sayAge = function() {
     console.log(this.age);
 };
+var instance1 = new SubType('666');
+```
+
+<img title="" src="http://54sans.top:5000/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%202021-03-16%20151600.jpg" alt="" data-align="center">
+
+<img src="http://54sans.top:5000/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%202021-03-16%20151830.jpg" title="" alt="" data-align="center">
+
+::: tip
+
+寄生式组合继承通过：盗用构造函数继承属性，使用混合式原型链继承方法。
+
+**思路：** **不通过**调用**父类构造函**数给**子原型赋值**，取得父类型的**副本**。本质上就是通过寄生式继承来**继承父类**原型，然后将返回的新对象**赋值给子类**原型。
+
+:::
+
+```js
+/**
+ * 寄生式组合继承模式
+ * @param subType 子类
+ * @param superType 父类
+ */
+function inheritPrototype(subType,superType){
+    let prototype = Object.create(superType.prototype) // 创建对象
+    prototype.constructor = subType;  // 增强对象
+    subType.prototype = prototype;  // 赋值对象
+}
+
+function SuperType(name){
+    this.name = name;
+    this.colors = ['red','green','blue']
+}
+SuperType.prototype.sayName = function (){
+    console.log(this.name);
+}
+
+// 子类
+function SubType(name, age){
+    SuperType.call(this,name);
+    this.age = age;
+}
+
+// 只是复制了 父类构造函数 并没有去调用
+inheritPrototype(SubType, SuperType);
+SubType.prototype.sayAge = function () {
+    alert(this.age);
+}
+let instance = new SubType("sans");
+console.log(instance.name)
+//指向SubType 如果没有修正原型的构造函数，则会指向父类构造函数
+console.log(instance.constructor) 
 ```
