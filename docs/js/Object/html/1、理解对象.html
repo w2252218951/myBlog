@@ -1,0 +1,379 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<script>
+// "use strict"
+/*  // 属性的值是否可修改的特性为 false
+    let person = {};
+    Object.defineProperty(person, 'name', {
+        writable: false,
+        value: 'sans'
+    })
+    console.log(person.name); // sans
+    person.name = 'HW';
+    console.log(person.name); // sans*/
+
+/*    // 属性修改特性为 false
+    let person = {};
+    Object.defineProperty(person, 'name', {
+        configurable: false,
+        value: 'sans'
+    })
+    console.log(person.name); // sans
+    delete person
+    console.log(person.name); // sans*/
+
+/*// 访问器属性
+let book = {
+    year_: 2020,
+    editor: 1
+};
+Object.defineProperty(book,'year', {
+    set(val){
+        if(val > 2020){
+            this.year_ = val;
+            this.editor += val - 2020;
+        }
+    },
+    get(){
+        // 此处 this 指向的是对象本身
+        return this.year_
+    }
+})
+book.year = 2021;
+console.log(book);*/
+
+/* // defineProperties
+let book = {};
+Object.defineProperties(book, {
+    year_: {
+        value: 2020
+    },
+    editor: {
+        value: 1,
+    },
+    year: {
+        set(val) {
+            if (val > 2020) {
+                this.year_ = val;
+                this.editor += val - 2020;
+            }
+        },
+        get() {
+            return this.year_
+        }
+    }
+})
+book.year = 2022
+// console.log(book);
+let descriptorYear = Object.getOwnPropertyDescriptor(book, 'year')
+console.log(descriptorYear);
+let descriptorYear_ = Object.getOwnPropertyDescriptor(book, 'year_')
+console.log(descriptorYear_);*/
+
+/*let dest, src, result;
+dest = {};
+src = {id: 'src'};
+// 会返回修改后的目标对象
+result = Object.assign(dest, src)
+// console.log(dest === result); // true
+// console.log(dest !== src); // true
+// console.log(result); // {id: 'src' }
+// console.log(dest); // {id: 'src'}
+
+/!**
+ * 获取函数和设置函数
+ *!/
+dest = {
+    // 一一对应时就会通过这个属性操作方法
+    // 因为这的设置函数是并未执行赋值操作
+    // 所以没发生改变
+    set a(val){
+        console.log(`Invoked dest setter with param ${val}`);
+        return val
+    },
+}
+src = {
+    get a() {
+        console.log('Invoked src getter');
+        return 'foo';
+    }
+}
+// 在获取时调用src中的get方法  赋值是调用 dest中的 set 方法
+Object.assign(dest,src);
+console.log(dest);*/
+
+/*let dest, src, result;
+/!**
+ * 覆盖属性
+ *!/
+dest = {id: 'dest'};
+result = Object.assign(dest, {id: 'src1', a: 'foo'}, {id: 'src2', b: 'bar'});
+// Object.assign 会覆盖重复的属性
+console.log(result); // { id: src2, a: foo, b: bar }
+// 可以通过目标对象上的设置函数观察到覆盖的过程：
+dest = {
+    set id(x) {
+        console.log(x);
+    }
+};
+Object.assign(dest, {id: 'first'}, {id: 'second'}, {id: 'third'});
+// first
+// second
+// third
+/!**
+ * 对象引用
+ *!/
+dest = {};
+src = {a: {}};
+Object.assign(dest, src);
+// 浅复制意味着只会复制对象的引用
+console.log(dest); // { a :{} }
+console.log(dest.a === src.a); // true*/
+
+
+/*let dest, src, result;
+/!**
+ * 错误处理
+ *!/
+dest = {};
+src = {
+    a: 'foo',
+    get b() {
+        // Object.assign()在调用这个获取函数时会抛出错误
+        throw new Error();
+    },
+    c: 'bar'
+};
+try {
+    Object.assign(dest, src);
+} catch(e) {}
+// Object.assign()没办法回滚已经完成的修改
+// 因此在抛出错误之前，目标对象上已经完成的修改会继续存在：
+console.log(dest); // { a: foo }*/
+
+
+/**
+ // Object.is()
+ console.log(Object.is(true, 1));  // false
+ console.log(Object.is({}, {}));   // false
+ console.log(Object.is('2', 2));   // false
+
+ // 正确的判断 0、 -0、 +0是否相等
+ console.log(Object.is(+0, -0));  // false
+ console.log(Object.is(+0, 0));   // true
+ console.log(Object.is(-0, 0));   // false
+
+ // 唯一能判断NaN 与 NaN 相等的方法
+ console.log(Object.is(NaN, NaN));  // true
+
+ // 要检查超过两个值，通过递归利用相等性传递
+ function checkEqual(x, ...rest){
+    console.log(x); // 1
+    console.log(rest);  // [2, 3, 4, 5]
+    console.log(...rest);  // 2 3 4 5
+}
+ let arr = [1,2,3,4,5];
+ checkEqual(...arr);
+
+ function recursivelyCheckEqual(x, ...rest){
+    return Object.is(x , rest[0]) &&
+        (rest.length < 0 || recursivelyCheckEqual(...rest))
+} */
+
+
+/*// 可计算属性
+// 引入可计算属性之前
+const nameKey = 'name';
+let person = {};
+person[nameKey] = 'sans';
+console.log(person); // {name : 'sans'}
+// 引入可计算属性之后
+// const nameKey = 'name';
+let person1 = {
+    [nameKey]: 'sans'
+}
+console.log(person1); // {name : 'sans'}*/
+
+/*const nameKey = 'name';
+const ageKey = 'age';
+let uniqueToken = 0;
+
+function getUniqueKey(key) {
+    return `${key}_${uniqueToken++}`
+}
+
+let person = {
+    [getUniqueKey(nameKey)]: 'sans',
+    [getUniqueKey(ageKey)]: 22
+}
+console.log(person);  // {name_0 : 'sans', age_1: 22}*/
+
+/*
+// 简写获取函数 和 设置函数
+let person = {
+    name_ : '',
+    get name() {
+        return this.name_
+    },
+    set name(name){
+        console.log(1111);
+        this.name_ = name;
+    },
+    sayName(){
+        console.log(this.name_);
+    }
+}
+person.name = 'sans'
+person.sayName(); // sans
+*/
+
+/*const methodKey = 'sayName';
+let person =  {
+    [methodKey](name){
+        console.log(name);
+    }
+}
+person.sayName('sans'); // sans*/
+
+
+// 对象解构
+/*// 使用对象结构前
+let person = {
+    name: 'sans',
+    age: 22
+}
+// let personName = person.name,
+//     personAge = person.age;
+// console.log(personName);  // sans
+// console.log(personAge);   // 22
+
+// 使用对象解构
+let {name: personName, age: personAge} = person
+console.log(personName);
+console.log(personAge);*/
+
+/*let {length} = 'sans'
+// 相当于 { sans.length: length}
+console.log(length); // 4
+
+let {constructor: c} = 4,
+    num = 4;
+console.log(num.constructor); // Number()
+console.log(c); // Number()
+console.log(c === Number); // true
+
+// let { _ } = null;   // TypeError
+// let { _ } = undefined;  // TypeError
+let {length: _} = 'sans';
+console.log(_); // 4
+
+let personName, personAge;
+let person = {
+    name: 'sans',
+    age: 22
+};
+({name: personName, age: personAge} = person);
+console.log(personName, personAge); // sans 22*/
+
+/*// 嵌套解构
+let person = {
+    name: 'sans',
+    age: 22,
+    job: {
+        title: 'FE'
+    }
+}
+let personCopy = {};
+({
+    name: personCopy.name,
+    age: personCopy.age,
+    job: personCopy.job
+} = person)
+// 因为是将对象引用赋值给 personCopy
+// 所以修改person.job也会改变 personCopy的值
+person.job.title = 'Hacker';
+person.name = 'HW'
+console.log(person);
+// { name: 'HW', age: 22, job: { title: 'Hacker' } }
+console.log(personCopy);
+// { name: 'sans', age: 22, job: { title: 'Hacker' } }*/
+
+/*// 嵌套解构赋值
+let person = {
+    name: 'sans',
+    age: 22,
+    job: {
+        title: 'FE'
+    }
+}
+let { job: {title}} = person
+// 相当于将 job.title 直接赋值给了 title
+console.log(title); // FE*/
+
+
+
+/*
+// 不能执行嵌套解构的情况
+let person = {
+    job: {
+        title: 'FE'
+    }
+}
+let personCopy = {
+    job: {
+    }
+};
+// foo 在源对象上时 undefined
+/!*({
+    foo: {
+        bar: personCopy.bar
+    }
+} = person);*!/
+// Uncaught TypeError: Cannot read property 'bar' of undefined
+
+// job在目标对象上是 undefined
+({
+    job: {
+        title: personCopy.job.title
+    }
+} = person);
+// 不存在时 TypeError: Cannot set property 'title' of undefined
+// 当 job 存在目标对象上
+console.log(personCopy);
+// {job: {title: 'FE'}}
+*/
+
+
+let person = {
+    name: 'sans',
+    age: 22
+}
+
+function printPerson(foo, {name, age}, bar) {
+    console.log(arguments);
+    console.log(name, age);
+}
+
+function printPerson2(foo, {name: personName, age: personAge}, bar) {
+    console.log(arguments);
+    console.log(personName, personAge);
+}
+
+printPerson('1st', person, '2nd');
+// ['1st', { name: 'Matt', age: 27 }, '2nd']
+// 'Matt', 27
+printPerson2('1st', person, '2nd');
+// ['1st', { name: 'Matt', age: 27 }, '2nd']
+// 'Matt', 27
+</script>
+</body>
+
+</html>

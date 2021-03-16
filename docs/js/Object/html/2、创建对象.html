@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+<script>
+// let Person = function (name, age, job){
+//     this.name = name;
+//     this.age = age;
+//     this.job = job;
+//     this.sayName = function (){
+//         console.log(this.name);
+//     }
+// }
+/*
+// 函数声明
+function Person(name, age, job) {
+    this.name = name;
+    this.age = age;
+    this.job = job;
+    this.sayName = function () {
+        console.log(this.name);
+    }
+}
+
+Person('sans', 22, 'FE');*/
+
+// 函数表达式
+let Person = function (name, age, job){
+    this.name = name;
+    this.age = age;
+    this.job = job;
+    this.sayName = function (){
+        console.log(this.name);
+    }
+}
+let person1 = new Person('sans',22, 'FE');
+let person2 = new Person('hw',22, 'BOSS');
+console.log(person1);
+person1.sayName(); // sans
+person2.sayName()  // hw
+console.log(person1 instanceof Object); // true
+console.log(person1 instanceof Person); // true
+console.log(person2 instanceof Object); // true
+console.log(person2 instanceof Person); // true
+
+
+/*
+// 区分构造函数
+// 通过new操作符实例化的构造函数
+let person = new Person('sans', 22, "FE");
+person.sayName();  //sans
+
+// 作为函数调用
+Person('hw',22,'BOSS');  // 挂在到window下
+window.sayName();  // hw
+
+// 在另一个对象的作用域中调用
+let o = new Object();
+Person.call(o, 'lsn', 23, 'PM');
+o.sayName()  // lsn*/
+
+
+/*
+// 解决每次创建实例时都重新创建一个对象上的方法
+function Person(name, age, job) {
+    this.name = name;
+    this.age = age;
+    this.job = job;
+    this.sayName = sayName;
+}
+
+function sayName() {
+    console.log(this.name);
+}
+
+let person1 = new Person('sans', 22, 'FE');
+let person2 = new Person('hw', 22, 'BOSS');
+person1.sayName(); // sans
+person2.sayName()  // hw*/
+
+/*
+// 原型模式
+function Person(){};
+Person.prototype.name = 'sans';
+Person.prototype.age = 22;
+Person.prototype.sayName = function (){
+    console.log(this.name);
+}
+let person1 = new Person()
+console.log(person1); // Person
+person1.sayName(); // sans
+let person2 = new Person();
+person2.sayName() // sans
+console.log(person1.sayName === person2.sayName); // true
+*/
+
+
+
+
+/*
+// 原型
+/!**
+ *构造函数可以是函数表达式或函数声明
+ * function Person(){}
+ * let Person = function(){}
+ *!/
+let Person = function () {
+}
+/!**
+ * 构造函数创建后就会有一个与之关联的 prototype属性
+ * 指向原型（对象）
+ *!/
+console.log(typeof Person.prototype); // Object
+console.log(Person.prototype);
+// {
+//     constructor: ƒ Person()
+//     __proto__: Object
+// }
+/!**
+ * 该原型对象也有一个constructor 属性，
+ * 指向该对象的构造函数
+ * 两者循环引用
+ *!/
+console.log(Person.prototype.constructor === Person); // true
+
+/!**
+ * 正常的原型链最终都会终止与 Object的原型对象
+ * Object原型的原型是null
+ *!/
+/!**
+ * Person.prototype ===> Person的原型对象
+ * 其 __proto__ 属性指向该对象构造函数的原型对象
+ * 又因为其实 Object函数创建的实例对象
+ * 所以这里是指向 Object的原型对象的
+ *!/
+console.log(Person.prototype.__proto__ === Object.prototype); // true
+/!**
+ * Object的原型对象的constructor属性指向的是他的构造函数
+ * 因此 这里 指向的就是 Object
+ *!/
+console.log(Person.prototype.__proto__.constructor === Object); // true
+
+/!**
+ * Object原型对象的原型链指向的是 null 都终止与null
+ *!/
+console.log(Person.prototype.__proto__.__proto__ === null); // true
+console.log(Person.prototype.__proto__);
+// {
+// constructor: f Object(),
+// toString: ...
+// hasOwnProperty: ...
+// isPrototypeOf: ...
+// ...
+// }
+
+let person1 = new Person(),
+    person2 = new Person();
+Person.prototype.name = 'sans';
+
+/!**
+ * 构造函数、原型对象和实例
+ * 是 3 个完全不同的对象：
+ *!/
+console.log(person1 !== Person); // true
+console.log(person1 !== Person.prototype); // true
+console.log(Person.prototype !== Person); // tru
+
+/!**
+ * 实例能通过 __proto__链接到原型对象
+ * 实际上指向的是隐藏特性 [[Prototype]]
+ *
+ * 构造函数能通过prototype属性直接链接原型对象
+ * 所以实例与构造函数并没有直接联系，与原型对象有直接联系
+ * *!/
+// person1的__proto__指向其构造函数的原型对象
+console.log(person1.__proto__ === Person.prototype); // true
+// 其构造函数的原型对象的构造函数就是 Person
+console.log(person1.__proto__.constructor === Person); // ture
+
+/!**
+ * 通过同一个构造函数创建的两个实例
+ * 共享一个原型对象
+ *!/
+console.log(person1.__proto__ === person2.__proto__); // true
+
+/!**
+ * 通过 instanceof检测实例是否在 原型链上
+ *!/
+console.log(person1 instanceof Person);
+console.log(person1 instanceof Object);
+// Object函数是 Function函数的实例
+console.log(Object instanceof Function);
+console.log(Function instanceof Object);
+
+// 判断是否是 __proto__
+// person1的 __proto__ 指向的是 Person的原型对象
+console.log(Person.prototype.isPrototypeOf(person1)); // tue
+console.log(Person.prototype.isPrototypeOf(person2)); // true
+
+// 通过Object.getPrototypeOf() 获取对象的原型对象
+console.log(Object.getPrototypeOf(person1) === Person.prototype); // true
+console.log(Object.getPrototypeOf(person1));
+// 注意!!!  返回的是原型对象上的 属性
+console.log(Object.getPrototypeOf(person1).name);*/
+
+/*// 通过Object.setPrototypeOf()向实例的私有特性[[Prototype]]传值
+// 重写一个对象的原型继承关系
+let biped = {
+    num: 2
+};
+let person = {
+    name: 'sans'
+}
+Object.setPrototypeOf(person, biped)
+console.log(person.name); // sans
+console.log(person.num);  // 2
+console.log(Object.getPrototypeOf(person)); // Object
+console.log(Object.getPrototypeOf(person) === biped); // true*/
+
+// Object.create() 创建一个新对象，并指定原型
+/*let biped = {
+    num: 2
+}
+let person = Object.create(biped);
+person.name = 'sans';
+console.log(person.name); // sans
+console.log(person.num);  // 2
+console.log(person);
+// {
+//     name: 'sans';
+//     __proto__: {
+//         num : 2
+//     }
+// }
+console.log(Object.getPrototypeOf(person)); // { num : 2 }
+console.log(Object.getPrototypeOf(person) === biped); // true*/
+
+/*
+// 属性的遮蔽
+function Person() {
+};
+Person.prototype.name = 'sans';
+Person.prototype.age = 22;
+Person.prototype.asyName = function () {
+    console.log(this.name);
+};
+let person1 = new Person();
+let person2 = new Person();
+person1.name = null;
+// 原型对象上的属性被实例属性遮蔽
+console.log(person1.name); // null
+// 实力上没有改属性值，通过指针向上访问到 原型对象
+console.log(person2.name); // sans
+*/
+
+/*
+
+// 判断属性是否存在于 实例对象上
+function Person() {
+};
+Person.prototype.name = 'sans';
+Person.prototype.age = 22;
+Person.prototype.asyName = function () {
+    console.log(this.name);
+};
+let person1 = new Person();
+let person2 = new Person();
+console.log(person1.hasOwnProperty('name')); // false
+
+person1.name = 'hw';
+console.log(person1.name); // hw  来自实例
+console.log(person1.hasOwnProperty('name')); // true
+
+console.log(person2.name); // sans 来自原型
+console.log(person2.hasOwnProperty('name')); // false
+
+delete person1.name
+console.log(person1.name); // sans  来自原型
+console.log(person1.hasOwnProperty('name')); // false
+*/
+
+
+/*
+
+// 通过in操作符判断属性是否在对象上
+function Person() {
+};
+Person.prototype.name = 'sans';
+Person.prototype.age = 22;
+Person.prototype.asyName = function () {
+    console.log(this.name);
+};
+let person1 = new Person();
+let person2 = new Person();
+
+console.log(person1.hasOwnProperty('name')); // false
+console.log('name' in person1);  // true
+
+person1.name = 'hw';
+console.log(person1.name); // hw  来自实例
+console.log(person1.hasOwnProperty('name')); // true
+console.log('name' in person1);  // true
+
+console.log(person2.name); // sans 来自原型
+console.log(person2.hasOwnProperty('name')); // false
+console.log('name' in person1);  // true
+
+delete person1.name
+console.log(person1.name); // sans  来自原型
+console.log(person1.hasOwnProperty('name')); // false
+console.log('name' in person1);  // true
+*/
+
+
+/*
+// 判断对象是否在原型上
+function hasPrototypeProperty(Object, name){
+    return !Object.hasOwnProperty && (name in Object)
+}
+
+function Person() {
+};
+Person.prototype.name = 'sans';
+Person.prototype.age = 22;
+Person.prototype.asyName = function () {
+    console.log(this.name);
+};
+let person = new Person();
+console.log(hasPrototypeProperty(person, 'name')); // true
+
+person.name = 'hw';
+console.log(hasPrototypeProperty(person, 'name')); // false
+*/
+
+
+
+/*
+// 枚举属性
+function Person() {
+};
+Person.prototype.name = 'sans';
+Person.prototype.age = 22;
+Person.prototype.asyName = function () {
+    console.log(this.name);
+};
+for (let i in Person.prototype) {
+    console.log(i);
+}
+
+// let keys = Object.keys(Person);
+// console.log(keys); // []
+
+let keys = Object.keys(Person.prototype);
+console.log(keys);  // ['name', 'age', 'asyName']
+
+let p1 = new Person();
+p1.name = 'sans';
+p1.age = 22;
+
+let p1keys = Object.keys(p1);
+console.log(p1keys); //["name", "age"]
+
+//获取不可枚举的实例属性通过 Object.getOwnPropertyNames()
+let key1s = Object.getOwnPropertyNames(Person.prototype);
+console.log(key1s); // ["constructor", "name", "age", "asyName"]
+*/
+
+
+/*
+// 获取符号键名 Object.getOwnPropertySymbols()
+let k1 = Symbol('k1'),
+    k2 = Symbol('k2');
+let o = {
+    [k1]: 'k1',
+    [k2]: 'k2',
+}
+console.log(Object.getOwnPropertySymbols(o));  //[Symbol(k1), Symbol(k2)]
+*/
+
+
+/*
+// 属性枚举顺序
+let k1 = Symbol('k1'),
+    k2 = Symbol('k2')
+let o = {
+    1:1,
+    first: 'first',
+    [k1]: 'sym2',
+    second: 'second',
+    0: 0
+}
+
+o[k2] = 'sym2';
+o[3] = 3;
+o.third = 'third';
+o[2] = 2;
+console.log(Object.getOwnPropertyNames(o));
+// 按顺序排列 ["0", "1", "2", "3", "first", "second", "third"]
+console.log(Object.getOwnPropertySymbols(o));
+// 按顺序排列 [Symbol(k1), Symbol(k2)]
+*/
+
+// 对象迭代
+/*const o = {
+    foo: 'bar',
+    baz: 1,
+    qux: {}
+}
+console.log(Object.values(o));
+// ["bar" , 1, {}]
+console.log(Object.entries(o));
+// 0: (2) ["foo", "bar"]
+// 1: (2) ["baz", 1]
+// 2: (2) ["qux", {…}]*/
+
+/*const o = {
+    qux: {},
+    1: 23123
+}
+// 枚举顺序不确定
+console.log(Object.values(o));
+// [ 23123  {} ]
+console.log(Object.values(o)[1] === o.qux);  // true
+// 将属性转换为字符串
+console.log(Object.entries(o));
+// [ ['1', 23123], ['qux' : {}]*/
+
+/*
+
+// 通过给constructor属性赋值达到恢复其指向相对应对象的功能
+function Person() {
+}
+
+Person.prototype = {
+    name: 'sans',
+    age: 22,
+    job: 'FE',
+    sayName() {
+        console.log(this.name);
+    }
+}
+// 恢复constructor属性
+Object.defineProperty(Person.prototype, 'constructor', {
+    enumerable: false,
+    value: Person
+})
+
+let friend = new Person();
+Person.prototype.sayHi = function (){
+    console.log('hi');
+}
+friend.sayHi() // hi
+*/
+
+/*
+function Person() {}
+let friend = new Person();
+Person.prototype = {
+    constructor: Person,
+    name: "Nicholas",
+    age: 29,
+    job: "Software Engineer",
+    sayName() {
+        console.log(this.name);
+    }
+};
+friend.sayName()  // 错误
+
+console.log(Object.getOwnPropertyDescriptor(Person.prototype, 'constructor'));
+// configurable: true
+// enumerable: true
+// value: ƒ Person()
+// writable: true
+Object.defineProperty(Person.prototype,'constructor',{
+    enumerable: false,
+    value: Person
+})
+// 指向的是最初的原型
+friend.sayName()  // 错误
+*/
+
+/*
+// 原生引用类型构造函数的原型方法
+console.log(typeof Array.prototype.sort);  // 'function'
+console.log(typeof String.prototype.toString); // 'function'*/
+
+/*String.prototype.startsWith = function (text){
+    return this.indexOf(text) === 0;
+}
+let msg = "Hello world!";
+console.log(msg.startsWith('Hello')); // true
+*/
+
+/*// 原型存在的问题
+function Person (){
+}
+Person.prototype = {
+    // 指定构造函数
+    constructor: Person,
+    name: 'sans',
+    age: 22,
+    job: 'FE',
+    friends: ['Jack','Lily']
+}
+let person1 = new Person();
+let person2 = new Person();
+// 这里的friends是存在于 Person的原型对象上的
+person1.friends.push('Sam')
+console.log(person1.friends); // ['Jack','Lily', 'Sam]
+console.log(person2.friends); // ['Jack','Lily', 'Sam]
+console.log(person1.friends === person2.friends); // true*/
+</script>
+</html>

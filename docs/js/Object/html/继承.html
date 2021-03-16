@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+<script>
+
+/*
+function Person(){
+    // 实例化时会调用本方法
+    this.name = 'sans'
+    console.log(this.name); // sans
+}
+let person = new Person();
+
+// 将原型指向另一个类型的实例
+function SuperType() {
+    // 默认情况下 this 挂载在 window下
+    // 在实例化时将this 指向了自身
+    console.log(this,'this') // SuperType
+    this.property = true
+}
+SuperType.prototype.getSuperValue = function (){
+    return this.property
+}
+function SubType() {
+    this.subproperty = false
+}
+// 继承 SuperType
+SubType.prototype = new SuperType();
+console.log(SubType.prototype, 'SubType.prototype');
+SubType.prototype.getSubValue = function (){
+    return this.subproperty
+}
+let instance = new SubType();
+console.log(instance);
+console.log(instance.getSuperValue()); // true
+
+// 通过 instanceof 判断实例的原型链中是否出现过相对应的构造函数。
+console.log(instance instanceof Object); // true
+console.log(instance instanceof SuperType); // true
+console.log(instance instanceof SubType); // true
+
+// 通过isPrototype()传入的参数判断传入参数的原型链中是否包含调用它的原型
+console.log(Object.prototype.isPrototypeOf(instance)); // true
+console.log(SuperType.prototype.isPrototypeOf(instance));; // true
+console.log(SubType.prototype.isPrototypeOf(instance)); // true
+*/
+
+/*
+function SuperType() {
+    this.property = true
+}
+SuperType.prototype.getSuperValue = function (){
+    return this.property
+}
+function SubType() {
+    this.subproperty = false
+}
+// 继承SuperType
+SubType.prototype = new SuperType();
+let test = new SuperType();
+// 新方法
+SubType.prototype.getSubValue = function (){
+    return this.subproperty;
+}
+// 覆盖已有的方法
+SubType.prototype.getSuperValue = function (){
+    return false
+}
+// 任然调用最初的方法。
+console.log(test.getSuperValue()); // true
+let instance = new SubType();
+console.log(instance.getSuperValue()); // false
+*/
+
+/*
+function SuperType() {
+    this.property = true
+}
+
+SuperType.prototype.getSuperValue = function () {
+    return this.property
+}
+
+function SubType() {
+    this.subproperty = false
+}
+
+// 继承SuperType
+SubType.prototype = new SuperType();
+// 通过对象字面量添加新方法，会导致上一行无效
+SubType.prototype = {
+    getSubValue() {
+        return this.subproperty;
+    },
+    someOtherMethod() {
+        return false;
+    }
+}
+let instance = new SubType();
+console.log(instance.getSuperValue()); // Uncaught TypeError
+*/
+
+/*
+// 在子类构造函数中调用父类构造函数
+// 通过call 和 apply以新创建的对象为上下文执行构造函数
+function SuperType(){
+    this.colors = ['red','blue','pink']
+}
+function SubType(){
+    SuperType.call(this)
+}
+let instance1 = new SubType();
+instance1.colors.push('yellow');
+console.log(instance1.colors);
+// ['red','blue','pink','pink']
+let instance2 = new SubType();
+console.log(instance2.colors);
+// ['red','blue','pink']
+*/
+
+/*
+//在子类构造函数中向父类构造函数传参
+function SuperType(name){
+    this.name = name;
+}
+function SubType(){
+    // 继承 SuperType 并传参
+    SuperType.call(this,'sans');
+    this.age = 22;
+}
+let instance = new SubType();
+console.log(instance.name); // 'sans'
+console.log(instance.age); // 22
+*/
+
+
+/*// 组合继承
+function SuperType(name) {
+    this.name = name;
+    this.colors = ['red', 'blue', 'green']
+}
+
+SuperType.prototype.sayName = function () {
+    console.log(this.name);
+}
+
+function SubType(name, age) {
+    // 继承属性
+    SuperType.call(this, name);
+    this.age = age;
+}
+
+// 继承方法
+SubType.prototype = new SubType();
+
+SubType.prototype.sayAge = function () {
+    console.log(this.age);
+}
+let instance1 = new SubType('sans', 22);
+instance1.colors.push('yellow');
+console.log(instance1.colors); // "red,blue,green,black"
+instance1.sayAge(); // 22
+instance1.sayName(); // 'sans
+
+let instance2 = new SubType('hw',23);
+console.log(instance2.colors); // "red,blue,green"
+instance2.sayAge();  // 23
+instance2.sayName(); // 'hw'*/
+
+/*
+// 原型式继承
+// 本质上是 在object函数中创建一个临时构造函数
+// 将传入的对象赋值给临时构造函数的原型
+// 然后返回这个临时类型的一个实例
+// 本质上进行了一次浅复制
+function object(o){
+    function F(){}
+    F.prototype = o;
+    return new F();
+}
+// ES6 中通过 object.create()将原型式继承的概念规范化了
+
+
+let person = {
+    name: "Nicholas",
+    friends: ["Shelby", "Court", "Van"]
+};
+let anotherPerson = object(person);
+anotherPerson.friends.push("Rob");
+// 该anotherPerson其实是 F()的实例
+console.log(anotherPerson);  // F {name : 'sans', __proto__}
+let yetAnotherPerson = object(person);
+yetAnotherPerson.name = "Linda";
+yetAnotherPerson.friends.push("Barbie");
+console.log(person.friends); // "Shelby,Court,Van,Rob,Barbie"
+
+/!*let anotherPerson = Object.create(person);
+anotherPerson.name = "Greg";
+anotherPerson.friends.push("Rob");
+console.log(anotherPerson);  //  {name : 'sans', __proto__}*!/
+
+*/
+
+
+/*
+// 寄生式继承
+function createAnother(og){
+    let clone = Object.create(og); // 创建一个新对象
+    clone.say = function (){   // 增强该该对象
+        console.log("hi");
+    }
+    return clone  // 返回该对象
+}
+let person = {
+    name: 'sans',
+    friends:  ["Shelby", "Court", "Van"]
+}
+let anotherPerson = createAnother(person);
+anotherPerson.say()  // hi
+*/
+
+
+/*
+let num = 0
+// 寄生式组合继承
+function SuperType(name){
+    console.log(num++);
+    this.name = name;
+    this.colors = ['red','green','blue']
+}
+SuperType.prototype.sayName = function (){
+    console.log(this.name);
+}
+
+// 子类
+function SubType(name, age){
+    console.log(111);
+    SuperType.call(this,name); // 第二次调用SuperType()
+    this.age = age;
+}
+// SuperType.prototype = new SuperType() // 第一次调用SuperType()
+SubType.prototype.constructor = SubType;
+SubType.prototype.sayAge = function() {
+    console.log(this.age);
+};
+let arr  = new SubType();
+*/
+
+/**
+ * 寄生式组合继承模式
+ * @param subType 子类
+ * @param superType 父类
+ */
+function inheritPrototype(subType,superType){
+    let prototype = Object.create(superType.prototype) // 创建对象
+    prototype.constructor = subType;  // 增强对象
+    subType.prototype = prototype;  // 赋值对象
+}
+
+function SuperType(name){
+    this.name = name;
+    this.colors = ['red','green','blue']
+}
+SuperType.prototype.sayName = function (){
+    console.log(this.name);
+}
+
+// 子类
+function SubType(name, age){
+    SuperType.call(this,name);
+    this.age = age;
+}
+
+// 只是复制了 父类构造函数 并没有去调用
+inheritPrototype(SubType, SuperType);
+SubType.prototype.sayAge = function () {
+    alert(this.age);
+}
+let instance = new SubType("sans");
+console.log(instance.name)
+// console.log(instance.constructor)//指向SubType 如果没有修正原型的构造函数，则会指向父类构造函数
+</script>
+</html>
