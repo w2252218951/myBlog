@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<style>
+</style>
+<body>
+
+</body>
+<script>
+/*
+// 函数变量提升
+console.log(FunctionExp);  // undefined
+var FunctionExp = function () {
+};
+console.log(FunctionExp); // function (){}
+
+console.log(FunctionDec); // FunctionDec (){}
+function FunctionDec() {
+}
+
+console.log(FunctionDec); // FunctionDec () {}
+
+console.log(classExp);  // undefined
+var classExp = class {
+}
+console.log(classExp); // class {}
+
+console.log(classDec);  // ReferenceError: ClassDeclaration is not defined
+class classDec {
+};
+console.log(classDec); // class {}
+*/
+
+// 函数只受函数作用域限制 类受块级作用域限制
+/*
+{
+    function functionExp() {}
+    // 受块级作用域限制
+    class classExp {}
+}
+console.log(functionExp);// functionExp() {}
+console.log(classExp); //  Uncaught ReferenceError: classExp is not defined
+*/
+
+
+// 类的构成
+// 空类定义 有效
+class c1 {
+}
+
+// 有构造函数的类 有效
+class c2 {
+    constructor() {
+    }
+}
+
+// 有获取方法的类 有效
+class c3 {
+    get name() {
+
+    }
+}
+
+// 有设置函数的类 有效
+class c4 {
+    set name(val) {
+
+    }
+}
+// 有静态方法的类 有效
+class c5 {
+    static myTest() {
+    }
+}
+
+let Person = class PersonName {
+    identify() {
+        console.log(Person);
+        console.log(PersonName);
+        console.log(Person.name, PersonName.name);
+    }
+}
+let p = new Person();
+p.identify();
+</script>
+</html>

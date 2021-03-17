@@ -392,9 +392,8 @@ SubType.prototype.sayAge = function() {
 var instance1 = new SubType('666');
 ```
 
-<img title="" src="http://54sans.top:5000/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%202021-03-16%20151600.jpg" alt="" data-align="center">
-
-<img src="http://54sans.top:5000/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%202021-03-16%20151830.jpg" title="" alt="" data-align="center">
+![](http://54sans.top:5000/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%202021-03-16%20151600.jpg);
+![](http://54sans.top:5000/%E5%B1%8F%E5%B9%95%E6%88%AA%E5%9B%BE%202021-03-16%20151830.jpg);
 
 ::: tip
 
