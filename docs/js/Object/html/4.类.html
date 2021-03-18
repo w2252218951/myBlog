@@ -46,7 +46,7 @@ console.log(classExp); //  Uncaught ReferenceError: classExp is not defined
 */
 
 
-// 类的构成
+/*// 类的构成
 // 空类定义 有效
 class c1 {
 }
@@ -84,6 +84,107 @@ let Person = class PersonName {
     }
 }
 let p = new Person();
-p.identify();
+p.identify();*/
+/*
+  // 实例化 类
+   class Animal {}
+
+   class Person {
+       constructor(){
+           console.log('person');
+       }
+   }
+   class Vegetable {
+       constructor() {
+           this.name = 'apple'
+       }
+   }
+   let a = new Animal();
+   let b = new Person();
+   // 使用new 操作符会调用该构造函数  person
+   let c = new Vegetable();
+   console.log(c.name); // apple
+   */
+
+/*
+ // 实例化类时传参
+ class Person {
+     constructor(name) {
+         console.log(arguments.length);
+         this.name = name || null
+     }
+ }
+ let p1 = new Person  // 0
+ console.log(p1.name); // null
+
+ let p2 = new Person(); // 0
+ console.log(p2.name); // null
+// 传入参数
+ let p3 = new Person("sans") // 1
+ console.log(p3.name); // sans
+ */
+
+/*
+class Person {
+    constructor(flag){
+        this.foo = 'foo';
+        if(flag){
+            return {
+                bar : 'bar'
+            }
+        }
+    }
+}
+let p1 = new Person,
+    p2 = new Person(true);
+console.log(p1); // Person {foo: "foo"}
+console.log(p1 instanceof Person); // true
+
+console.log(p2); // {bar : 'bar'}
+console.log(p2 instanceof Person); // false
+*/
+
+
+/*
+// 类构造函数和构造函数的区别
+function Person () {}
+class Animal {}
+
+// this指向window 挂载到window上
+let p = Person();
+let a = Animal();
+// TypeError: class constructor Animal cannot be invoked without 'new'
+*/
+
+/*
+// 类构造函数实例化
+class Person {}
+let p1 = new Person();
+p1.constructor();
+// Class constructor Person cannot be invoked without 'new'
+
+// 使用构造函数的引用创建一个新实例
+let p2 = new p1.constructor();
+*/
+
+/*// 判断类构造函数的类型
+class Person {}
+
+console.log(Person); // class Person {}
+console.log(typeof Person); // function*/
+
+/*
+// 类 与 函数的相似性
+class Person {}
+function fn(){};
+console.log(Person.prototype); // {constructor : f()}
+console.log(fn.prototype); // {constructor : f()}
+console.log(Person.prototype.constructor === Person); // true
+*/
+
+// 通过instanceof 判断构造函数是否出现在实例的原型链上
+class Person {};
+let p = new Person();
+console.log(p instanceof Person); // true
 </script>
 </html>
