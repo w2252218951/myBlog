@@ -8,7 +8,9 @@ date: 2021-03-13
 ---
 
 ## 保证浮点数计算的正确性
+
 **先升幂后降幂**
+
 ```js
 function add(num1, num2){
     let r1, r2, m;
@@ -21,5 +23,3 @@ function add(num1, num2){
 }
 console.log(add(0.1, 0.2)); // 0.3
 ```
-
-

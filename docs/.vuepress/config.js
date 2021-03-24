@@ -12,8 +12,8 @@ module.exports = {
             {
                 text: '博客', items: [
                     {text: 'JS', link: '/js/'},
-                    {text: 'HTML', link: '/html'},
-                    {text: 'CSS', link: '/css'},
+                    {text: 'HTML', link: '/html/'},
+                    {text: 'CSS', link: '/css/skill'},
                 ]
             },
             {text: '关于', link: '../about'}
@@ -32,7 +32,7 @@ module.exports = {
         // 自动形成侧边导航
         subSidebar: 'auto',
         sidebar: 'auto',
-        sidebarDepth: 2,
+        sidebarDepth: 4,
         displayAllHeaders: false,
         sidebar: {
             '/js/': [
@@ -46,6 +46,9 @@ module.exports = {
                         'Object/prototype',
                     ]
                 },
+            ],
+            '/css/': [
+              'skill'
             ],
             '/experience/': [
                 'utils'

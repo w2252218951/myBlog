@@ -18,7 +18,7 @@ date: 2021-03-16
 
 :::
 
-# 1、类定义： p249
+## 1、类定义： p249
 
 两种定义方式：
 
@@ -66,7 +66,7 @@ console.log(functionExp);// functionExp() {}
 console.log(classExp); //  Uncaught ReferenceError: classExp is not defined
 ```
 
-## 类的构成 p 250
+### 类的构成 p 250
 
 <mark>类可以包含构造函数、实例方法、获取函数、获取函数和静态方法，也可以为空。</mark>
 
@@ -106,13 +106,13 @@ class c5 {
 }
 ```
 
-# 2、类构造函数 p250
+## 2、类构造函数 p250
 
 `constructor`用于在**类定义块中**创建类的**构造函数**，该方法会告诉**解释器**在使用`new`操作符创建类的**新实例**时，应该调用这个函数。  
 
 <mark>构造函数的定义不是必须的，不定义构造函数相当于将构造函数定义为空函数。</mark>  
 
-## 2.1、实例化
+### 2.1、实例化
 
 <mark>`new`操作符实例化`Person`等于使用`new`调用其构造函数</mark>  
 
@@ -186,7 +186,7 @@ console.log(p2); // {bar : 'bar'}
 console.log(p2 instanceof Person); // false  
 ```
 
-#### 类构造函数与构造函数的区别：
+### 类构造函数与构造函数的区别：
 
 <mark>调用类构造函数必须使用`new`操作符。</mark>普通的构造函数如果不使用`new`操作符调用，就会**以全局**的`this`作为内部对象。<mark>调用类构造函数不使用`new`就会报错</mark>  
 
@@ -215,7 +215,7 @@ p1.constructor();
 let p2 = new p1.constructor();  
 ```
 
-## 2.2、把类当成特殊函数 p252
+### 2.2、把类当成特殊函数 p252
 
 `ECMAScript`中并没有正式的类这个类型，但是声明一个类后，通过`typeof`操作符检查类标识符，表明他是个函数。  
 

@@ -14,7 +14,7 @@ date: 2021-03-13
 
 <mark>实现继承</mark>是`ECMAScript`中**唯一支持**的继承方法，<mark>主要通过原型链实现。</mark>
 
-# 1、原型链 p238
+## 1、原型链 p238
 
 将一个原型**指向另一个**类型的**实例**。意味着这个**原型本身**会有一个**内部指针**，指向**另一个原型**，相应的**另一个原型**也会有**一个指针**指向**另一个构造函数**。
 
@@ -58,7 +58,7 @@ console.log(instance.getSuperValue()); // true
 
 **原型链**能够**拓展原型搜索机制**。在读取实例的属性时，会在**实例**上**先进行搜索**。如果没有，就会**继续搜索实例**的原型，通过**原型链继承后**，**就会继承向上**，去**搜索原型的原型**。<mark>对属性和方法的搜索会一直持续到末端。</mark>
 
-## 1.1、默认原型 p240
+### 1.1、默认原型 p240
 
 <mark>默认情况下，所有引用类型都继承自`Object`，这也是通过原型链实现的。</mark>
 
@@ -68,7 +68,7 @@ console.log(instance.getSuperValue()); // true
 
 `instance`<mark>是`SubType`的实例</mark>，<mark>`SubType`继承`SuperType`,</mark>`SuperType`继承`Object`。在调用`instance.toString()`**实际上调用**的是保存在`Object.prototype`上的方法
 
-## 1.2、原型与继承关系 p240
+### 1.2、原型与继承关系 p240
 
 <mark>原型与实例的关系</mark>通过两种方法进行判断:<mark>`instanceof`,`isPrototype（）`</mark>
 
@@ -90,7 +90,7 @@ console.log(SuperType.prototype.isPrototypeOf(instance));; // true
 console.log(SubType.prototype.isPrototypeOf(instance)); // true
 ```
 
-## 1.3、关于方法 p241
+### 1.3、关于方法 p241
 
 ```js
 function SuperType() {
@@ -153,7 +153,7 @@ console.log(instance.getSuperValue()); // Uncaught TypeError
 
 子类的原型**被赋值**为`SuperType`的**实例**后，又**被一个对象覆盖**了。覆盖后**的原型**是一**个`Object`实例**，而不**是`SuperType`的**实例。<mark>原型链在这时断了。</mark>
 
-## 1.4、原型的问题 p242
+### 1.4、原型的问题 p242
 
 <mark>原型链是实现**继承**的强大工具，但也存在着一定的问题</mark>
 
@@ -165,7 +165,7 @@ console.log(instance.getSuperValue()); // Uncaught TypeError
 
 <mark>2、子类型在实例化时不能给父类型的构造函数传参</mark>，事实上我们无法在不影响所有对象实例的情况下把参数传进父类的构造函数。
 
-# 2、盗用构造函数 p243
+## 2、盗用构造函数 p243
 
 <mark>"盗用构造函数"</mark>（constructor stealing ，也叫 "对象伪装"，"经典继承"，用于解决原型包含引用值导致的继承问题）
 
@@ -190,7 +190,7 @@ console.log(instance2.colors);
 // ['red','blue','pink']
 ```
 
-## 2.1、优点：传递参数 p243
+### 2.1、优点：传递参数 p243
 
 <mark>**优点：** 可以在子类构造函数中父类构造函数传参</mark>
 
@@ -209,13 +209,13 @@ console.log(instance.name); // 'sans'
 console.log(instance.age); // 22
 ```
 
-## 2.2、问题
+### 2.2、问题
 
 使用构造函数模式自定义类型的问题：<mark>必须在构造函数中定义方法，函数不能重用</mark>
 
 <mark>子类也不能访问父类原型上定义的方法，因此所有类型只能使用构造函数模式</mark>
 
-# 3、组合继承 p244
+## 3、组合继承 p244
 
 <mark>综合了原型链和盗用构造函数，结合了两种</mark>
 
@@ -258,7 +258,7 @@ instance2.sayName(); // 'hw'
 
 <mark>`JavaScript`中使用最多的继承模式</mark>，同时也保留了`instanceof`操作符合`isPrototype（）`方法
 
-# 4、原型式继承 p245
+## 4、原型式继承 p245
 
 ```js
 // 原型式继承
@@ -322,7 +322,7 @@ console.log(yetAnotherPerson.name);
 
 :::
 
-# 5、寄生式继承 p246
+## 5、寄生式继承 p246
 
 与原型式继承类似，思路类似于寄生构造函数和工厂模式
 
@@ -359,7 +359,7 @@ anotherPerson.say()  // hi
 
 :::
 
-# 6、寄生式组合继承
+## 6、寄生式组合继承
 
 组合式继承存在效率问题：父类构造函数始终会被调用两次：
 
