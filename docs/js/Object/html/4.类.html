@@ -182,9 +182,56 @@ console.log(fn.prototype); // {constructor : f()}
 console.log(Person.prototype.constructor === Person); // true
 */
 
-// 通过instanceof 判断构造函数是否出现在实例的原型链上
+/*// 通过instanceof 判断构造函数是否出现在实例的原型链上
 class Person {};
 let p = new Person();
-console.log(p instanceof Person); // true
+console.log(p instanceof Person); // true*/
+
+/*// 通过 instanceof 判断 类的构造函数
+class Person {}
+let p1 = new Person();
+console.log(p1.constructor === Person); // true 相当于 p.__proto__.constructor === Person
+console.log(p1 instanceof Person);  // true
+console.log(p1 instanceof Person.constructor);  // false
+
+let p2 = new Person.constructor();
+console.log(p2);  // ƒ anonymous() {}
+console.log(Person.constructor); // ƒ Function() { [native code] }
+console.log(p2.constructor === Person); // false
+console.log(p2 instanceof Person); // false
+console.log(p2 instanceof Person.constructor); // true*/
+
+
+/*// 在数组中定义类
+let classList = [
+    class {
+        constructor(id) {
+            this.id_ = id;
+            console.log(`instance ${this.id_}`);
+        }
+    }
+]
+function createInstance(classDefinition, id){
+    return new classDefinition(id) // 相当于  return new class(id) 返回 class的实例
+}
+let foo = createInstance(classList[0],1024)  // instance 1024*/
+
+// 立即调用类表单时
+let p = new class Foo{
+    constructor(x) {
+        console.log(x);
+    }
+}('bar'); // bar
+
+/*
+ // 相当于
+class Foo {
+    constructor(x) {
+        console.log(x);
+    }
+}
+let p = new Foo('bar') // bar
+*/
+
 </script>
 </html>

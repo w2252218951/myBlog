@@ -255,3 +255,68 @@ class Person {};
 let p = new Person();  
 console.log(p instanceof Person); // true  
 ```
+
+类本身具有普通构造函数一样的行为。在使用`new`调用时就会被当做构造函数。
+
+<mark>类中定义的`constructor`方法并不会被当做构造函数</mark>，在对其使用`instanceOf`时会返回`false`。**但是**，在创建实例时直接将**构造函数**当成**普通函数**调用就会**反转**。
+
+```js
+class Person {}
+let p1 = new Person();
+console.log(p1.constructor === Person); // true 相当于 p.__proto__.constructor === Person
+console.log(p1 instanceof Person);  // true
+console.log(p1 instanceof Person.constructor);  // false 
+
+// 直接实例化类的构造函数
+let p2 = new Person.constructor();
+console.log(p2);  // ƒ anonymous() {}
+console.log(Person.constructor); // ƒ Function() { [native code] }
+console.log(p2.constructor === Person); // false
+console.log(p2 instanceof Person); // false
+console.log(p2 instanceof Person.constructor); // true
+```
+
+<mark>类是`Javascript`中的一等公民，因此也能把类当作参数进行传递</mark>
+
+<mark>类可以像表达式一样在任何地方定义，比如数组中</mark>
+
+```js
+// 在数组中定义类
+let classList = [
+    class {
+        constructor(id) {
+            this.id_ = id;
+            console.log(`instance ${this.id_}`);
+        }
+    }
+]
+function createInstance(classDefinition, id){
+ // 相当于  return new class(id) 返回 class的实例
+    return new classDefinition(id) 
+}
+let foo = createInstance(classList[0],1024)  // instance 1024
+```
+
+<mark>与`IIFE`(立即调用函数表达式)相似，也能够直接实例化</mark>
+
+```js
+// 立即调用类表单时
+let p = new class Foo{
+    constructor(x) {
+        console.log(x);
+    }
+}('bar'); // bar
+
+/*
+ // 相当于
+class Foo {
+    constructor(x) {
+        console.log(x);
+    }
+}
+let p = new Foo('bar') // bar
+*/
+
+```
+
+### 2.3、实例、原型和类成员

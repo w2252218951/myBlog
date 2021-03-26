@@ -2,7 +2,7 @@
 title: CSS趣谈
 tags:
 - CSS趣谈
-categories
+categories:
 - CSS
 date: 2021-03-26
 ---
