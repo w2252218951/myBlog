@@ -14,7 +14,7 @@ date: 2021-03-16
 
 类（class）是`ECMAScript`中新的**基础性语法糖** ；
 
-**表面上**时**面向对象**编程，实际上仍使用的是**原型和构造函数**的概念；
+**表面上**是**面向对象**编程，实际上仍使用的是**原型和构造函数**的概念；
 
 :::
 
@@ -135,15 +135,19 @@ class c5 {
  class Animal {}  
 
  class Person {  
- constructor(){  
- console.log('person');  
- }  
- } class Vegetable {  
- constructor() {  
- this.name = 'apple' }  
- } let a = new Animal();  
+     constructor(){  
+         console.log('person');  
+     }  
+ } 
+ class Vegetable {  
+     constructor() {  
+         this.name = 'apple'
+      }  
+ }
+  let a = new Animal();  
  let b = new Person();  
- // 使用new 操作符会调用该构造函数 person let c = new Vegetable();  
+ // 使用new 操作符会调用该构造函数 person
+ let c = new Vegetable();  
  console.log(c.name); // apple  
 ```
 
@@ -152,16 +156,18 @@ class c5 {
 ```js
  // 实例化类时传参  
  class Person {  
- constructor(name) {  
- console.log(arguments.length);  
- this.name = name || null  
- }  
- } let p1 = new Person  // 0 console.log(p1.name); // null  
-
+     constructor(name) {  
+         console.log(arguments.length);  
+         this.name = name || null  
+     }  
+ } 
+ let p1 = new Person  // 0 
+ console.log(p1.name); // null  
  let p2 = new Person(); // 0  
  console.log(p2.name); // null  
-// 传入参数  
- let p3 = new Person("sans") // 1 console.log(p3.name); // sans  
+ // 传入参数  
+ let p3 = new Person("sans") // 1
+ console.log(p3.name); // sans  
 ```
 
 ::: tip  
@@ -173,12 +179,17 @@ class c5 {
 
 ```js
 class Person {  
- constructor(flag){  
- this.foo = 'foo'; if(flag){  
- return {  
- bar : 'bar' }  
- } }}  
-let p1 = new Person, p2 = new Person(true);  
+     constructor(flag){  
+         this.foo = 'foo';
+         if(flag){  
+             return {  
+             bar : 'bar' 
+             }  
+         } 
+     }
+}  
+let p1 = new Person, 
+    p2 = new Person(true);  
 console.log(p1); // Person {foo: "foo"}  
 console.log(p1 instanceof Person); // true  
 // 返回对象原型指针没有被修改  
@@ -198,13 +209,14 @@ class Animal {}
 // this指向window 挂载到window上  
 let p = Person();  
 let a = Animal();  
-// TypeError: class constructor Animal cannot be invoked without 'new' ```  
+// TypeError: class constructor Animal cannot be invoked without 'new'    
+```
 
-<mark>类构造函数实例化后，会成为普通的实例方法，但仍然要使用`new`调用</mark>  
+ 类构造函数实例化后，会成为普通的实例方法，但仍然要使用`new`调用。
 
-<mark>因此。实例化之后可以在实力上引用它</mark>  
+因此。实例化之后可以在实例上引用它。
 
-```js  
+```js
 // 类构造函数实例化  
 class Person {}  
 let p1 = new Person();  
@@ -212,7 +224,7 @@ p1.constructor();
 // Class constructor Person cannot be invoked without 'new'  
 
 // 使用构造函数的引用创建一个新实例  
-let p2 = new p1.constructor();  
+let p2 = new p1.constructor(); 
 ```
 
 ### 2.2、把类当成特殊函数 p252
