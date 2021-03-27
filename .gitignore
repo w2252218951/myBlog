@@ -12,5 +12,6 @@ yarn-error.log*
 *.njsproj
 *.sln
 
+dist/
 /docs/.vuepress/dist/
 .history/
