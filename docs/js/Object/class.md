@@ -14,7 +14,7 @@ date: 2021-03-16
 
 类（class）是`ECMAScript`中新的**基础性语法糖** ；
 
-**表面上**时**面向对象**编程，实际上仍使用的是**原型和构造函数**的概念；
+**表面上**是**面向对象**编程，实际上仍使用的是**原型和构造函数**的概念；
 
 :::
 
@@ -135,15 +135,19 @@ class c5 {
  class Animal {}  
 
  class Person {  
- constructor(){  
- console.log('person');  
- }  
- } class Vegetable {  
- constructor() {  
- this.name = 'apple' }  
- } let a = new Animal();  
+     constructor(){  
+         console.log('person');  
+     }  
+ } 
+ class Vegetable {  
+     constructor() {  
+         this.name = 'apple'
+      }  
+ }
+  let a = new Animal();  
  let b = new Person();  
- // 使用new 操作符会调用该构造函数 person let c = new Vegetable();  
+ // 使用new 操作符会调用该构造函数 person
+ let c = new Vegetable();  
  console.log(c.name); // apple  
 ```
 
@@ -152,16 +156,18 @@ class c5 {
 ```js
  // 实例化类时传参  
  class Person {  
- constructor(name) {  
- console.log(arguments.length);  
- this.name = name || null  
- }  
- } let p1 = new Person  // 0 console.log(p1.name); // null  
-
+     constructor(name) {  
+         console.log(arguments.length);  
+         this.name = name || null  
+     }  
+ } 
+ let p1 = new Person  // 0 
+ console.log(p1.name); // null  
  let p2 = new Person(); // 0  
  console.log(p2.name); // null  
-// 传入参数  
- let p3 = new Person("sans") // 1 console.log(p3.name); // sans  
+ // 传入参数  
+ let p3 = new Person("sans") // 1
+ console.log(p3.name); // sans  
 ```
 
 ::: tip  
@@ -173,12 +179,17 @@ class c5 {
 
 ```js
 class Person {  
- constructor(flag){  
- this.foo = 'foo'; if(flag){  
- return {  
- bar : 'bar' }  
- } }}  
-let p1 = new Person, p2 = new Person(true);  
+     constructor(flag){  
+         this.foo = 'foo';
+         if(flag){  
+             return {  
+             bar : 'bar' 
+             }  
+         } 
+     }
+}  
+let p1 = new Person, 
+    p2 = new Person(true);  
 console.log(p1); // Person {foo: "foo"}  
 console.log(p1 instanceof Person); // true  
 // 返回对象原型指针没有被修改  
@@ -198,13 +209,14 @@ class Animal {}
 // this指向window 挂载到window上  
 let p = Person();  
 let a = Animal();  
-// TypeError: class constructor Animal cannot be invoked without 'new' ```  
+// TypeError: class constructor Animal cannot be invoked without 'new'    
+```
 
-<mark>类构造函数实例化后，会成为普通的实例方法，但仍然要使用`new`调用</mark>  
+ 类构造函数实例化后，会成为普通的实例方法，但仍然要使用`new`调用。
 
-<mark>因此。实例化之后可以在实力上引用它</mark>  
+因此。实例化之后可以在实例上引用它。
 
-```js  
+```js
 // 类构造函数实例化  
 class Person {}  
 let p1 = new Person();  
@@ -212,7 +224,7 @@ p1.constructor();
 // Class constructor Person cannot be invoked without 'new'  
 
 // 使用构造函数的引用创建一个新实例  
-let p2 = new p1.constructor();  
+let p2 = new p1.constructor(); 
 ```
 
 ### 2.2、把类当成特殊函数 p252
@@ -243,3 +255,113 @@ class Person {};
 let p = new Person();  
 console.log(p instanceof Person); // true  
 ```
+
+类本身具有普通构造函数一样的行为。在使用`new`调用时就会被当做构造函数。
+
+<mark>类中定义的`constructor`方法并不会被当做构造函数</mark>，在对其使用`instanceOf`时会返回`false`。**但是**，在创建实例时直接将**构造函数**当成**普通函数**调用就会**反转**。
+
+```js
+class Person {}
+let p1 = new Person();
+console.log(p1.constructor === Person); // true 相当于 p.__proto__.constructor === Person
+console.log(p1 instanceof Person);  // true
+console.log(p1 instanceof Person.constructor);  // false 
+
+// 直接实例化类的构造函数
+let p2 = new Person.constructor();
+console.log(p2);  // ƒ anonymous() {}
+console.log(Person.constructor); // ƒ Function() { [native code] }
+console.log(p2.constructor === Person); // false
+console.log(p2 instanceof Person); // false
+console.log(p2 instanceof Person.constructor); // true
+```
+
+<mark>类是`Javascript`中的一等公民，因此也能把类当作参数进行传递</mark>
+
+<mark>类可以像表达式一样在任何地方定义，比如数组中</mark>
+
+```js
+// 在数组中定义类
+let classList = [
+    class {
+        constructor(id) {
+            this.id_ = id;
+            console.log(`instance ${this.id_}`);
+        }
+    }
+]
+function createInstance(classDefinition, id){
+ // 相当于  return new class(id) 返回 class的实例
+    return new classDefinition(id) 
+}
+let foo = createInstance(classList[0],1024)  // instance 1024
+```
+
+<mark>与`IIFE`(立即调用函数表达式)相似，也能够直接实例化</mark>
+
+```js
+// 立即调用类表单时
+let p = new class Foo{
+    constructor(x) {
+        console.log(x);
+    }
+}('bar'); // bar
+
+/*
+ // 相当于
+class Foo {
+    constructor(x) {
+        console.log(x);
+    }
+}
+let p = new Foo('bar') // bar
+*/
+```
+
+### 2.3、实例、原型和类成员
+
+:::tip
+类的语法可以方便的定义存在实例上的成员，存在原型上的成员，以及存在本身的成员。
+
+:::
+
+#### 1、实例成员
+
+:::tip
+每次通过`new` **调用类标识符**，都会**执行类构造函数**。在构造函数内部，会为该新创建的实例添加"自有"属性。
+
+每个实例都对应一个唯一的实例成员，意味着所有成员在实实例上不能够共享。
+
+:::
+
+```js
+// 实例成员唯一性
+class Person {
+    constructor() {
+        // 使用对象包装类型定义字符串
+        // 以此判断下方测试两个对象的相等性
+        this.name = new String('Jack');
+        this.sayName = () => {
+            console.log(this.name);
+        };
+        this.nickName = ['Jake', 'J-Dog']
+    }
+}
+
+let p1 = new Person(),
+    p2 = new Person();
+p1.sayName() // String {"Jack"}
+p2.sayName() // String {"Jack"}
+console.log(p1.name === p2.name); // false
+console.log(p1.sayName === p2.sayName); // false
+console.log(p1.nicknames === p2.nicknames); // false
+p1.name = p1.nicknames[0];
+p2.name = p2.nicknames[1];
+p1.sayName(); // Jake
+p2.sayName(); // J-Dog 
+
+```
+
+#### 2、原型方法与访问器
+
+<mark>为了在实例间共享方法，类定义语法把类块中定义的方法作为原型方法</mark>

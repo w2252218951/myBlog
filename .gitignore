@@ -1,6 +1,5 @@
 .DS_Store
 node_modules/
-/schoolAdmin/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -12,8 +11,5 @@ yarn-error.log*
 *.ntvs*
 *.njsproj
 *.sln
-test.html
-dist
-/dist/
-dist.zip
+/docs/.vuepress/dist
 .history/
