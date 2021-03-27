@@ -5,7 +5,6 @@ module.exports = {
     host: 'localhost',
     port: 8080,
     themeConfig: {
-        type: 'blog',
         nav: [
             {text: '主页', link: '/'},
             {text: '心得', link: '/experience/utils'},
