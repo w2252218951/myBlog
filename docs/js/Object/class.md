@@ -316,7 +316,52 @@ class Foo {
 }
 let p = new Foo('bar') // bar
 */
-
 ```
 
 ### 2.3、实例、原型和类成员
+
+:::tip
+类的语法可以方便的定义存在实例上的成员，存在原型上的成员，以及存在本身的成员。
+
+:::
+
+#### 1、实例成员
+
+:::tip
+每次通过`new` **调用类标识符**，都会**执行类构造函数**。在构造函数内部，会为该新创建的实例添加"自有"属性。
+
+每个实例都对应一个唯一的实例成员，意味着所有成员在实实例上不能够共享。
+
+:::
+
+```js
+// 实例成员唯一性
+class Person {
+    constructor() {
+        // 使用对象包装类型定义字符串
+        // 以此判断下方测试两个对象的相等性
+        this.name = new String('Jack');
+        this.sayName = () => {
+            console.log(this.name);
+        };
+        this.nickName = ['Jake', 'J-Dog']
+    }
+}
+
+let p1 = new Person(),
+    p2 = new Person();
+p1.sayName() // String {"Jack"}
+p2.sayName() // String {"Jack"}
+console.log(p1.name === p2.name); // false
+console.log(p1.sayName === p2.sayName); // false
+console.log(p1.nicknames === p2.nicknames); // false
+p1.name = p1.nicknames[0];
+p2.name = p2.nicknames[1];
+p1.sayName(); // Jake
+p2.sayName(); // J-Dog 
+
+```
+
+#### 2、原型方法与访问器
+
+<mark>为了在实例间共享方法，类定义语法把类块中定义的方法作为原型方法</mark>

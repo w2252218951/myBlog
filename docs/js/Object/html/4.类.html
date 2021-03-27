@@ -216,6 +216,7 @@ function createInstance(classDefinition, id){
 }
 let foo = createInstance(classList[0],1024)  // instance 1024*/
 
+/*
 // 立即调用类表单时
 let p = new class Foo{
     constructor(x) {
@@ -223,7 +224,7 @@ let p = new class Foo{
     }
 }('bar'); // bar
 
-/*
+/!*
  // 相当于
 class Foo {
     constructor(x) {
@@ -231,7 +232,49 @@ class Foo {
     }
 }
 let p = new Foo('bar') // bar
+*!/
 */
 
+/*
+// 实例成员唯一性
+class Person {
+    constructor() {
+        // 使用对象包装类型定义字符串
+        // 以此判断下方测试两个对象的相等性
+        this.name = new String('Jack');
+        this.sayName = () => {
+            console.log(this.name);
+        };
+        this.nickName = ['Jake', 'J-Dog']
+    }
+}
+
+let p1 = new Person(),
+    p2 = new Person();
+p1.sayName() // String {"Jack"}
+p2.sayName() // String {"Jack"}
+console.log(p1.name === p2.name); // false
+console.log(p1.sayName === p2.sayName); // false
+console.log(p1.nicknames === p2.nicknames); // false
+p1.name = p1.nicknames[0];
+p2.name = p2.nicknames[1];
+p1.sayName(); // Jake
+p2.sayName(); // J-Dog
+*/
+
+
+// 将类块中的方法定义为原型方法
+class Person {
+    constructor(){
+        // 添加到this的所有内容，都会存在于不同实例
+        this.locate = () => {
+            console.log('instance');
+        }
+    }
+    locate() {
+        console.log('prototype');
+    }
+
+}
 </script>
 </html>
