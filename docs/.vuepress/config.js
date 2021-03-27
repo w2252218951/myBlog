@@ -13,7 +13,7 @@ module.exports = {
                 text: '博客', items: [
                     {text: 'JS', link: '/js/'},
                     {text: 'HTML', link: '/html/'},
-                    {text: 'CSS', link: '/css/skill'},
+                    {text: 'CSS', link: '/css/'},
                 ]
             },
             {text: '关于', link: '../about'}
@@ -48,7 +48,8 @@ module.exports = {
                 },
             ],
             '/css/': [
-              'skill'
+                '',
+                'skill'
             ],
             '/experience/': [
                 'utils'
