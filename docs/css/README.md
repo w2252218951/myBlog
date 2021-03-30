@@ -9,7 +9,7 @@ date: 2021-03-26
 
 - **1995年**，**W3C刚成立**，互联网此时几乎是文字信息；
 
-- CSS全程是Cascading Style Sheets(层叠样式表)；
+- CSS全称是Cascading Style Sheets(层叠样式表)；
 
 - **1996年12月17日CSS1诞生**；
 
@@ -23,8 +23,6 @@ date: 2021-03-26
 **CSS世界的诞生就是为图文信息展示服务的**
 
 :::
-
-
 
 ### 为什么CSS能够替代SVG？
 
@@ -49,5 +47,25 @@ date: 2021-03-26
 ### table属于CSS吗?
 
 不属于，因为`<table>`出现的比CSS要更早，所以流的特性对`<table>`并不适用,虽然CSS2.1加强了`<table>`的联系，例如对 `table` 类别的 `display`属性值的支持。
+
+### CSS3新特性
+
+1.   布局更丰富
+   
+   1. 媒介查询，响应式布局特性，图片元素的`srcset`  属性、CSS的`object-fit` 属性。
+   
+   2. 弹性盒子布局（`flexible box layout`）
+   
+   3. 格栅布局（gird layout） 
+
+2. 视觉表现进步
+   
+   1. 圆角、阴影、渐变；
+   
+   2. `transform`变换；
+   
+   3. `filter`滤镜；
+   
+   4. `animation`动画；
 
 
