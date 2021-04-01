@@ -325,7 +325,7 @@ let p = new Foo('bar') // bar
 
 :::
 
-#### 1、实例成员
+#### 2.3.1、实例成员
 
 :::tip
 每次通过`new` **调用类标识符**，都会**执行类构造函数**。在构造函数内部，会为该新创建的实例添加"自有"属性。
@@ -359,9 +359,91 @@ p1.name = p1.nicknames[0];
 p2.name = p2.nicknames[1];
 p1.sayName(); // Jake
 p2.sayName(); // J-Dog 
-
 ```
 
-#### 2、原型方法与访问器
+#### 2.3.2、原型方法与访问器
 
 <mark>为了在实例间共享方法，类定义语法把类块中定义的方法作为原型方法</mark>
+
+```js
+// 将类块中的方法定义为原型方法
+class Person {
+    constructor(){
+        // 添加到this的所有内容，都会存在于不同实例
+        this.locate = () => {
+            console.log('instance');
+        }
+    }
+    locate() {
+        console.log('prototype');
+    }
+}
+let p = new Person();
+p.locate() // instance
+p.prototype.locate() // prototype
+```
+
+:::tip
+
+可以将方法定义在类的构造函数或类块中，但不能在类块中给原型添加原始值或者对象作为成员数据。
+
+:::
+
+```js
+class Person  {
+    name: 'sans'
+}
+// Uncaught SyntaxError: Unexpected identifier
+```
+
+类也支持获取和设置访问器。语法与行为和普通对象一样。
+
+```js
+// 类 获取或设置访问器
+class Person {
+    set name(newName){
+        this.name_ = newName;
+    }
+    get name(){
+        return this.name_;
+    }
+}
+let p = new Person();
+p.name = 'sans';
+console.log(p.name); // sans
+```
+
+#### 2.3.3、静态类方法
+
+该方法常用来执行不特定于实例的操作，也不要求存在类的实例。每个类只有一个。
+
+使用`static`前缀作为关键词，在静态成员中，`this`引用类本身。
+
+```js
+class  Person {
+    // 定义的this存在于不同的实力上
+    constructor() {
+        this.locate = ()=> {
+            console.log('instance', this);
+        }
+    }
+    // 定义在类的原型上
+    locate(){
+        console.log('prototype', this);
+    }
+    // 定义在类本身
+    static locate(){
+        console.log('class', this);
+    }
+}
+let p = new Person();
+p.locate();  // instance, Person {}
+Person.prototype.locate(); // prototype {constructor: ...}
+Person.locate(); // class class Person{}
+```
+
+静态方法非常适合作为实例工厂
+
+#### 2.3.4、非函数成员和类成员
+
+<mark>类定义不支持显示的在原型或类上添加成员数据，但可以再外部添加</mark>

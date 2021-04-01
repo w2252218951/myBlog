@@ -263,7 +263,7 @@ p2.sayName(); // J-Dog
 */
 
 
-// 将类块中的方法定义为原型方法
+/*// 将类块中的方法定义为原型方法
 class Person {
     constructor(){
         // 添加到this的所有内容，都会存在于不同实例
@@ -274,7 +274,63 @@ class Person {
     locate() {
         console.log('prototype');
     }
-
 }
+let p = new Person();
+p.locate() // instance
+Person.prototype.locate() // prototype*/
+
+/*class Person  {
+    name: 'sans'
+}
+// Uncaught SyntaxError: Unexpected identifier*/
+
+
+/*// 类 获取或设置访问器
+class Person {
+    set name(newName){
+        this.name_ = newName;
+    }
+    get name(){
+        return this.name_;
+    }
+}
+let p = new Person();
+p.name = 'sans';
+console.log(p.name); // sans*/
+
+/*class  Person {
+    // 定义的this存在于不同的实力上
+    constructor() {
+        this.locate = ()=> {
+            console.log('instance', this);
+        }
+    }
+    // 定义在类的原型上
+    locate(){
+        console.log('prototype', this);
+    }
+    // 定义在类本身
+    static locate(){
+        console.log('class', this);
+    }
+}
+let p = new Person();
+p.locate();  // instance, Person {}
+Person.prototype.locate(); // prototype {constructor: ...}
+Person.locate(); // class class Person{}*/
+
+// 在类外部添加成员数据
+class Person {
+    sayName(){
+        console.log(`${Person.greeting} ${this.name}`);
+    }
+}
+//在类上定义成员数据
+Person.greeting = 'My name is';
+// 在类原型上定义成员数据
+Person.prototype.name = 'sans';
+let p =  new Person();
+console.log(p);
+p.sayName(); // My name is sans
 </script>
 </html>
