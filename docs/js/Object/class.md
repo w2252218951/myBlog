@@ -444,6 +444,84 @@ Person.locate(); // class class Person{}
 
 静态方法非常适合作为实例工厂
 
-#### 2.3.4、非函数成员和类成员
+#### 2.3.4、非函数成员和类成员 p256
 
 <mark>类定义不支持显示的在原型或类上添加成员数据，但可以再外部添加</mark>
+
+```js
+// 在类外部添加成员数据
+class Person {
+    sayName(){
+        console.log(`${Person.greeting} ${this.name}`);
+    }
+}
+//在类上定义成员数据
+Person.greeting = 'My name is';
+// 在类原型上定义成员数据
+Person.prototype.name = 'sans';
+let p =  new Person();
+console.log(p);
+p.sayName(); // My name is sans
+```
+
+:::tip
+类之所以没有显示的支持添加数据成员，是因为在共享目标（原型和类）上添加可修改数据成员是一种反模式。一般而言，对象实例应独自拥有通过`this`引用的数据
+
+:::
+
+#### 2.3.5、迭代器和生成器方法 p257
+
+```js
+// 在类的原型和本身上定义生成器
+class Person{
+    // 在类原型上定义生成器方法
+    *createNicknameIterator(){
+        yield 'Jack';
+        yield 'Jake';
+        yield 'J-Dog'
+    }
+    // 在类上定义生成器方法
+    static *createNicknameIterator(){
+        yield 'Butcher';
+        yield 'Baker';
+        yield 'Sans';
+    }
+}
+let jobIter = Person.createNicknameIterator();
+console.log(jobIter.next().value); // Butcher
+console.log(jobIter.next().value); // Baker
+console.log(jobIter.next().value); // Sans
+
+let p = new Person();
+let nicknameIter = p.createNicknameIterator();
+console.log(nicknameIter.next().value); // Jack
+console.log(nicknameIter.next().value); // Jake 
+console.log(nicknameIter.next().value); // J-Dog
+```
+
+可以通过添加默认迭代器，将类实例变成可迭代对象
+
+```js
+// 将类变成可迭代对象
+class Person {
+    constructor() {
+        this.nicknames = ['Sans','Jack','Ben']
+    }
+    *[Symbol.iterator](){
+        yield  *this.nicknames.entries();
+    }
+}
+let p = new Person();
+for(let [idx, nickname] of p){
+    console.log(nickname);
+}
+// Jack
+// Jake
+// J-Dog 
+```
+
+也可只返回迭代器实例
+
+```js
+
+```
