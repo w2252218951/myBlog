@@ -43,6 +43,7 @@ module.exports = {
                         'Object/createObject',
                         'Object/extend',
                         'Object/prototype',
+                        'Object/class',
                     ]
                 },
             ],
