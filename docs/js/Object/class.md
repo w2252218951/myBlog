@@ -318,14 +318,14 @@ let p = new Foo('bar') // bar
 */
 ```
 
-### 2.3、实例、原型和类成员
+## 3、实例、原型和类成员
 
 :::tip
 类的语法可以方便的定义存在实例上的成员，存在原型上的成员，以及存在本身的成员。
 
 :::
 
-#### 2.3.1、实例成员
+### 3.1、实例成员
 
 :::tip
 每次通过`new` **调用类标识符**，都会**执行类构造函数**。在构造函数内部，会为该新创建的实例添加"自有"属性。
@@ -361,7 +361,7 @@ p1.sayName(); // Jake
 p2.sayName(); // J-Dog 
 ```
 
-#### 2.3.2、原型方法与访问器
+### 3.2、原型方法与访问器
 
 <mark>为了在实例间共享方法，类定义语法把类块中定义的方法作为原型方法</mark>
 
@@ -413,7 +413,7 @@ p.name = 'sans';
 console.log(p.name); // sans
 ```
 
-#### 2.3.3、静态类方法
+### 3.3、静态类方法
 
 该方法常用来执行不特定于实例的操作，也不要求存在类的实例。每个类只有一个。
 
@@ -444,7 +444,7 @@ Person.locate(); // class class Person{}
 
 静态方法非常适合作为实例工厂
 
-#### 2.3.4、非函数成员和类成员 p256
+### 3.4、非函数成员和类成员 p256
 
 <mark>类定义不支持显示的在原型或类上添加成员数据，但可以再外部添加</mark>
 
@@ -469,7 +469,7 @@ p.sayName(); // My name is sans
 
 :::
 
-#### 2.3.5、迭代器和生成器方法 p257
+### 3.5、迭代器和生成器方法 p257
 
 ```js
 // 在类的原型和本身上定义生成器
@@ -523,5 +523,184 @@ for(let [idx, nickname] of p){
 也可只返回迭代器实例
 
 ```js
-
+class Person { 
+ constructor() { 
+ this.nicknames = ['Jack', 'Jake', 'J-Dog']; 
+ } 
+ [Symbol.iterator]() { 
+ return this.nicknames.entries(); 
+ } 
+} 
+let p = new Person(); 
+for (let [idx, nickname] of p) { 
+ console.log(nickname); 
+} 
+// Jack 
+// Jake 
+// J-Dog
 ```
+
+## 4、继承 p258
+
+:::tip
+ECMAScript6 新增了最出色的一项就是**原生支持类继承机制**。虽然类继承使用的是新语法，但是背后的原理依然是原型链。
+
+:::
+
+### 4.1、继承基础 `extends` p258
+
+`ES6`类支持**单继承** 。通过使用`extends`关键词，继承任何拥有[[Constructor]]和原型的对象。同时也能继承**普通**的构造函数
+
+```js
+// 类的继承
+class Vehicle{};
+// 继承类
+class Bus extends Vehicle{};
+let b = new Bus();
+console.log(b instanceof Bus); // true
+console.log(b instanceof Vehicle); // true
+
+// 继承普通构造函数
+function Person(){}
+class Engineer extends Person {};
+let e = new Engineer();
+console.log(e instanceof Engineer); // true
+console.log(e instanceof Person); // true
+```
+
+派生类可以通过**原型链**访问到**类和原型**上定义的方法。
+
+```js
+// 派生类同时原型链访问实例和方法
+class Vehicle{
+    identifyPrototype(id){
+        console.log(id, this);
+    }
+    static identifyPrototype(id){
+        console.log(id, 'static', this);
+    }
+}
+class Bus extends Vehicle{}
+
+let v = new Vehicle();
+let b = new Bus();
+b.identifyPrototype('bus'); // bus Bus{}
+v.identifyPrototype('vehicle'); // vehicle Vehicle{}
+
+Bus.identifyPrototype('bus');  // bus static Class Bus {}
+Vehicle.identifyPrototype('vehicle'); // vehicle static Class Vehicle
+```
+
+:::tip
+`extends`也可以在类表达式中使用。`let Bar = class extends Foo()`
+
+:::
+
+### 4.2、构造函数、HomeObject和Super() p259
+
+派生类的方法可以通过`super`关键词引用他们的原型。改关键词只在派生类中有效，而且仅限于类构造函数、实例方法和静态方法内部。
+
+在类构造函数内部使用`super`可以调用父类构造函数
+
+```js
+// super 调用类的原型
+class Vehicle{
+    constructor() {
+        this.hasEngine = true
+    }
+}
+class Bus extends Vehicle{
+    constructor() {
+        // 不要在super()之前引用this 否则会抛出 ReferenceError
+        super();
+        console.log(this instanceof Vehicle); // true
+        console.log(this) // Bus {hasEngine: true}
+    }
+};
+new Bus();
+```
+
+可以通过`super`调用继承的类上定义的静态方法。
+
+```js
+// super 调用继承类上的静态方法
+class Vehicle{
+    static identify(){
+        console.log('vehicle');
+    }
+}
+class Bus extends Vehicle{
+    // 如果子类含有静态方法 会覆盖掉继承的父类静态方法
+    static identify(){
+        super.identify();
+    }
+}
+Bus.identify(); // vehicle
+```
+
+:::tip
+`ES6`中给**类构造函数**和**类静态方法**添加了**内部特性**`[[HomeObject]]`,该特性是一个**指针**，指向**定义该方法**的**对象**。这个指针是自动赋值的。只能在`JS`引擎中访问。`super`**始终**会定义为`[[HomeObject]]`的原型
+
+:::
+
+使用`super`时要注意的几个问题：
+
+1. `super`只能在派生类构造函数和静态方法中使用。
+   
+   ```js
+   class Vehicle {
+       constructor() {
+           super();
+           //  SyntaxError: 'super' keyword unexpected here
+       }
+   }
+   ```
+
+2. 不能单独引用`super`，要么调用构造函数，要么调用静态方法；
+   
+   ```js
+   class Vehicle{}
+   class Bus extends Vehicle{
+       constructor() {
+           console.log(super);
+           //  SyntaxError: 'super' keyword unexpected here
+       }
+   }
+   ```
+
+3. 调用`super()`会调用父类构造函数，并将返回的实例赋值给`this`
+   
+   ```js
+   class Vehicle{}
+   class Bus extends Vehicle{
+       constructor() { 
+           // 此时会将父类返回的值赋值给 this
+           super();
+           console.log(this); // Bus {}
+           console.log(this instanceof Vehicle); // true
+       }
+   }
+   new Bus();
+   ```
+
+4. `super()`的行为如同调用构造函数，可以通过手动的方式给父类构造函数传参。
+   
+   ```js
+   // 可以通过super以手动的方式给父类构造函数传参
+   class Vehicle{
+       constructor(name) {
+           this.name = name
+       }
+   }
+   class Bus extends Vehicle{
+       constructor(name) {
+           super(name);
+       }
+   }
+   
+   console.log(new Bus('BMW')); // Bus {name : 'BMW'}
+   ```
+
+5. 如果没有定义类构造函数，实例化派生类时会调用`super()`，会传入所有传给派生类的参数。
+
+6. 
