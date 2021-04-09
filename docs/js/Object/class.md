@@ -571,8 +571,11 @@ console.log(e instanceof Person); // true
 派生类可以通过**原型链**访问到**类和原型**上定义的方法。
 
 ```js
-// 派生类同时原型链访问实例和方法
 class Vehicle{
+    // 实例化时调用 并且能够进行传参
+    constructor(id) {
+        console.log(id, 'constructor', this);
+    }
     identifyPrototype(id){
         console.log(id, this);
     }
@@ -582,8 +585,8 @@ class Vehicle{
 }
 class Bus extends Vehicle{}
 
-let v = new Vehicle();
-let b = new Bus();
+let v = new Vehicle('ve'); // ve constructor Vehicle {}
+let b = new Bus('bu'); // bu constructor  Bus{}
 b.identifyPrototype('bus'); // bus Bus{}
 v.identifyPrototype('vehicle'); // vehicle Vehicle{}
 
@@ -702,5 +705,183 @@ Bus.identify(); // vehicle
    ```
 
 5. 如果没有定义类构造函数，实例化派生类时会调用`super()`，会传入所有传给派生类的参数。
+   
+   ```js
+   class Person{
+       constructor(name) {
+           this.name = name
+       }
+   }
+   class who extends Person{}
+   let sans =new who('sans')
+   console.log(sans); // who {name : sans }
+   ```
 
-6. 
+6. 在**类构造函数**中，不能在调用 `super`前引用 `this`;
+   
+   ```js
+   class Person {}
+   class who extends Person{
+       constructor() {
+           console.log(this)
+       }
+   }
+   new who();
+   // Must call super constructor in derived class before accessing
+   // 'this' or returning from derived constructor
+   ```
+
+7. 如果在**派生类中显式**的定义了构造函数，那么必须在其中调用`super`，要么必须返回一个对象
+   
+   ```js
+   // 在派生类中显式的调用了构造函数，那么必须在其中调用super 要么返回一个对象
+   class Vehicle{}
+   class Car extends Vehicle{}
+   
+   class Bus extends Vehicle{
+       constructor() {
+           super();
+       }
+   }
+   class Van extends Vehicle{
+       constructor() {
+           return {}
+       }
+   }
+   
+   console.log(new Car()); // Car {}
+   console.log(new Bus()); // Bus {}
+   console.log(new Van()); // {}
+   ```
+
+### 4.3、抽象基类
+
+**抽象基类：** 可以供其他类继承，但不会被实例化。
+
+在`ECMAScript`中**没有专门支持**这种语法，但是通过`new.traget`很容易实现。
+
+`new.target`通过`new`关键词调用类或函数。通过在实例化是检测`new.target`是不是抽象基类，可以阻止对抽象基类的实例化。
+
+```js
+class Vehicle{
+   constructor() {
+       console.log(new.target);
+       if(new.target === Vehicle){
+           throw new Error('Vehicle cannot be directly instantiated')
+       }
+   }
+}
+// 派生类
+class Bus extends Vehicle{}
+new Bus(); // class Bus {}
+new Vehicle(); // class Vehicle {}
+// Error: Vehicle cannot be directly instantiated
+```
+
+通过**抽象基类**在**构造函数**中**检查**，能够要求**派生类**定义某个**方法**。因为原型方法在调用类构造函数之前就存在了，可以通过`this`关键字检查相应的方法。
+
+```js
+class Vehicle{
+    constructor() {
+        if(new.target ===  Vehicle){
+            throw new Error('Vehicle cannot be directly instantiated')
+        }
+        if(!this.foo){
+            throw new Error('Inheriting class must define foo()');
+        }
+        console.log('success');
+    }
+}
+// 派生类
+class Bus extends Vehicle{
+    foo(){}
+}
+// 派生类
+class Van extends Vehicle{}
+new Bus() // success
+new Van() // Inheriting class must define foo()
+```
+
+### 4.4、继承内置类型
+
+<mark>`ES6`类为**继承内置引用类型**提供了顺畅的机制。</mark>
+
+```js
+class SuperArray extends Array{
+    shuffle(){
+        for(let i = this.length - 1; i > 0; i--){
+            const j = Math.floor(Math.random() * (i + 1));
+            [this[i], this[j]] = [this[j], this[i]];
+        }
+    }
+}
+// 在没有类构造函数时，实例化派生类会传入所有传给派生类的参数
+let a = new SuperArray(1,2,4,5,6)
+console.log(a instanceof Array); // true
+console.log(a instanceof SuperArray); // true
+console.log(a);  // SuperArray(5) [1, 2, 4, 5, 6]
+a.shuffle();
+console.log(a);  // SuperArray(5) [4, 5, 2, 6, 1]
+```
+
+有些**内置类型**会**返回新实例**，默认情况下，返回的**实例类型**与**原始实例**的**类型一致**
+
+```js
+class SuperArray extends Array{}
+let a1 = new SuperArray(1,2,3,4,5,);
+let a2 = a1.filter((x => !!(x%2)));
+console.log(a1); // [1, 2, 3, 4, 5]
+console.log(a2); // [1, 3, 5]
+console.log(a1 instanceof SuperArray); // true
+console.log(a2 instanceof SuperArray); // true 
+```
+
+可以通过覆盖`Symbol.species`访问器，以此覆盖掉返回的实例类型与原始类型一致的情况、<mark>因为该操作能够决定在创建返回的实例时使用的类</mark>
+
+```js
+// 通过 Symbol.species 能够决定在创建返回的实例时使用的类
+class SuperArray extends Array{
+    static get [Symbol.species](){
+        return Array
+    }
+}
+let a1 = new SuperArray(1,2,3,4,5,);
+let a2 = a1.filter((x => !!(x%2)));
+console.log(a1); // [1, 2, 3, 4, 5]
+console.log(a2); // [1, 3, 5]
+console.log(a1 instanceof SuperArray); // true
+console.log(a2 instanceof SuperArray); // false
+console.log(a1 instanceof Array); // true
+console.log(a2 instanceof Array); // true
+```
+
+### 4.5、类混入 p263
+
+`ES6`没有显式的支持多类继承，但是能够通过现有的特性进行模拟。
+
+:::tip
+
+`Object.assign()`方法是为了混入对象而设计的。只有在**需要混入类**的行为是才**有必要**自己**实现混入表达式**。如果只需要混入多个对象，使用`Object.assign()`就行了
+
+:::
+
+`extends`能继承任何是类或者是一个构造函数的表达式
+
+```js
+class Vehicle{}
+function getParentClass(){
+    console.log('evaluated expression');
+    return Vehicle;
+}
+// 可求值的表达式
+class Bus extends getParentClass() {}
+console.log(new Bus()); //  'evaluated expression'   // Bus {}
+```
+
+**混入模式可以通过一个表达式中连缀多个混入元素来实现**，该表达式最终会解析成为一个被继承的类。
+
+问题：`Person`类需要组合A、B、C，则需要某种机制实现 **B** 继承 **A** ， **C**继承**B**， 而`Person`再继承**C**，从而他们组合到超类中。
+
+思路：定义一组“可嵌套”的函数，每个函数分别接受一个超类作为参数。将混入类定义为这个参数的子类，并返回这个类。这些组合函数可以连缀调用，最终组合成超类表达式
+
+ 

@@ -397,6 +397,10 @@ console.log(e instanceof Person); // true
 /*
 // 派生类同时原型链访问实例和方法
 class Vehicle{
+    // 实例化时调用 并且能够进行传参
+    constructor(id) {
+        console.log(id, 'constructor', this);
+    }
     identifyPrototype(id){
         console.log(id, this);
     }
@@ -406,8 +410,8 @@ class Vehicle{
 }
 class Bus extends Vehicle{}
 
-let v = new Vehicle();
-let b = new Bus();
+let v = new Vehicle('ve'); // ve constructor Vehicle {}
+let b = new Bus('bu'); // bu constructor  Bus{}
 b.identifyPrototype('bus'); // bus Bus{}
 v.identifyPrototype('vehicle'); // vehicle Vehicle{}
 
@@ -488,7 +492,141 @@ class Bus extends Vehicle{
 
 console.log(new Bus('BMW')); // Bus {name : 'BMW'}*/
 
+/*
+// 如果没有定义类构造函数，在派生类实例化时会调用super 而且会传入所有传给派生类的参数
+class Person{
+    constructor(name) {
+        this.name = name
+    }
+}
+class who extends Person{}
+let sans =new who('sans')
+console.log(sans); // who {name : sans }
+*/
 
+
+/*// 在类构造函数中不能在调用super前 引用this
+class Person {}
+class who extends Person{
+    constructor() {
+        console.log(this)
+    }
+}
+new who();
+// Must call super constructor in derived class before accessing
+// 'this' or returning from derived constructor*/
+
+
+/*// 在派生类中显式的调用了构造函数，那么必须在其中调用super 要么返回一个对象
+class Vehicle{}
+class Car extends Vehicle{}
+
+class Bus extends Vehicle{
+    constructor() {
+        super();
+    }
+}
+class Van extends Vehicle{
+    constructor() {
+        return {}
+    }
+}
+
+console.log(new Car()); // Car {}
+console.log(new Bus()); // Bus {}
+console.log(new Van()); // {}*/
+
+
+/*// 抽象基类 通过new关键词掉调用函数和类，通过实例化是检测new.target是否是抽象基类，以此阻止抽象基类的实例化
+class Vehicle{
+   constructor() {
+       console.log(new.target);
+       if(new.target === Vehicle){
+           throw new Error('Vehicle cannot be directly instantiated')
+       }
+   }
+}
+// 派生类
+class Bus extends Vehicle{}
+new Bus(); // class Bus {}
+new Vehicle(); // class Vehicle {}
+// Error: Vehicle cannot be directly instantiated*/
+
+/*// 通过this检测相对应的方法 原理：在调用类构造函数之前，原型方法就已经存在
+class Vehicle{
+    constructor() {
+        if(new.target ===  Vehicle){
+            throw new Error('Vehicle cannot be directly instantiated')
+        }
+        if(!this.foo){
+            throw new Error('Inheriting class must define foo()');
+        }
+        console.log('success');
+    }
+}
+// 派生类
+class Bus extends Vehicle{
+    foo(){}
+}
+// 派生类
+class Van extends Vehicle{}
+new Bus() // success
+new Van() // Inheriting class must define foo()*/
+
+
+// 通过class 继承内置引用类型
+/*
+class SuperArray extends Array{
+    shuffle(){
+        for(let i = this.length - 1; i > 0; i--){
+            const j = Math.floor(Math.random() * (i + 1));
+            [this[i], this[j]] = [this[j], this[i]];
+        }
+    }
+}
+// 在没有类构造函数时，实例化派生类会传入所有传给派生类的参数
+let a = new SuperArray(1,2,4,5,6)
+console.log(a instanceof Array); // true
+console.log(a instanceof SuperArray); // true
+console.log(a);  // SuperArray(5) [1, 2, 4, 5, 6]
+a.shuffle();
+console.log(a);  // SuperArray(5) [4, 5, 2, 6, 1]
+*/
+
+/*// 有些内置引用类型会返回新实例，但默认情况下新实例的类型和原始实例的类型是一致的
+class SuperArray extends Array{}
+let a1 = new SuperArray(1,2,3,4,5,);
+let a2 = a1.filter((x => !!(x%2)));
+console.log(a1); // [1, 2, 3, 4, 5]
+console.log(a2); // [1, 3, 5]
+console.log(a1 instanceof SuperArray); // true
+console.log(a2 instanceof SuperArray); // true*/
+
+/*// 通过 Symbol.species 能够决定在创建返回的实例时使用的类
+class SuperArray extends Array{
+    static get [Symbol.species](){
+        return Array
+    }
+}
+let a1 = new SuperArray(1,2,3,4,5,);
+let a2 = a1.filter((x => !!(x%2)));
+console.log(a1); // [1, 2, 3, 4, 5]
+console.log(a2); // [1, 3, 5]
+console.log(a1 instanceof SuperArray); // true
+console.log(a2 instanceof SuperArray); // false
+console.log(a1 instanceof Array); // true
+console.log(a2 instanceof Array); // true*/
+
+// extends 能继承任何 类和 构造函数的表达式
+class Vehicle{}
+function getParentClass(){
+    console.log('evaluated expression');
+    return Vehicle;
+}
+// 可求值的表达式
+class Bus extends getParentClass() {}
+
+console.log(new Bus()); //  'evaluated expression'   // Bus {}
 
 </script>
 </html>
