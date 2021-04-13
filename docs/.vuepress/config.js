@@ -46,6 +46,14 @@ module.exports = {
                         'Object/class',
                     ]
                 },
+                {
+                    title: '函数',
+                    collapsable: true,
+                    children: [
+                        'Function/',
+                        'Function/function',
+                    ]
+                },
             ],
             '/css/': [
                 '',

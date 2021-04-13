@@ -617,6 +617,7 @@ console.log(a2 instanceof SuperArray); // false
 console.log(a1 instanceof Array); // true
 console.log(a2 instanceof Array); // true*/
 
+/*
 // extends 能继承任何 类和 构造函数的表达式
 class Vehicle{}
 function getParentClass(){
@@ -627,6 +628,44 @@ function getParentClass(){
 class Bus extends getParentClass() {}
 
 console.log(new Bus()); //  'evaluated expression'   // Bus {}
+*/
 
+
+class Vehicle {
+}
+
+// 这是混入类
+let FooMixin = (SuperClass) => class extends SuperClass {
+    foo() {
+        console.log('foo');
+    }
+}
+let BarMixin = (SuperClass) => class extends SuperClass {
+    bar() {
+        console.log('bar');
+    }
+}
+let BazMixin = (SuperClass) => class extends SuperClass {
+    baz() {
+        console.log('baz');
+    }
+}
+
+function mix(BaseClass, ...Mixins) {
+    console.log(BaseClass,'BaseClass');  // class Vehicle {}
+    console.log(...Mixins, 'Mixins');
+    // total
+    return Mixins.reduce((acc, current) => {
+        return current(acc)
+    }, BaseClass);
+}
+
+class Bus extends mix(Vehicle, FooMixin, BarMixin, BazMixin) {
+}
+
+let b = new Bus();
+b.baz();  // baz
+b.bar();  // bar
+b.foo();  // foo
 </script>
 </html>

@@ -884,4 +884,72 @@ console.log(new Bus()); //  'evaluated expression'   // Bus {}
 
 思路：定义一组“可嵌套”的函数，每个函数分别接受一个超类作为参数。将混入类定义为这个参数的子类，并返回这个类。这些组合函数可以连缀调用，最终组合成超类表达式
 
- 
+```js
+class Vehicle {}
+                             // 这是混入类
+let FooMixin = (SuperClass) => class extends SuperClass{
+    foo(){
+        console.log('foo');
+    }
+}
+let BarMixin = (SuperClass) => class extends SuperClass{
+    bar(){
+        console.log('bar');
+    }
+}
+let BazMixin = (SuperClass) => class extends SuperClass{
+    baz(){
+        console.log('baz');
+    }
+}
+class Bus extends BazMixin(BarMixin(FooMixin(Vehicle))){};
+let b = new Bus();
+b.baz();  // baz
+b.bar();  // bar
+b.foo();  // foo
+```
+
+可以通过辅助函数将嵌套调用展开
+
+```js
+class Vehicle {
+}
+// 这是混入类
+let FooMixin = (SuperClass) => class extends SuperClass {
+    foo() {
+        console.log('foo');
+    }
+}
+let BarMixin = (SuperClass) => class extends SuperClass {
+    bar() {
+        console.log('bar');
+    }
+}
+let BazMixin = (SuperClass) => class extends SuperClass {
+    baz() {
+        console.log('baz');
+    }
+}
+
+function mix(BaseClass, ...Mixins) {
+    console.log(BaseClass,'BaseClass');  // class Vehicle {}
+    console.log(...Mixins, 'Mixins');
+    // total
+    return Mixins.reduce((acc, current) => {
+        return current(acc)
+    }, BaseClass);
+}
+
+class Bus extends mix(Vehicle, FooMixin, BarMixin, BazMixin) {
+}
+
+let b = new Bus();
+b.baz();  // baz
+b.bar();  // bar
+b.foo();  // foo
+```
+
+:::tip
+
+很多`JS`框架（特别是`React`）已经抛弃了混入模式，改成了组合模式（把方法提取到肚里的类和辅助对象中，然后将他们组合起来，但不使用继承）。 这反映了`组合胜过继承（composition over inheritance）`这个设计模式被很多人遵循，在代码设计中能提供极大的灵活性
+:::

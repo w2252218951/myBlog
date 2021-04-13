@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+<script>
+/*// 以下两种方法都有效
+let double = (x)=> {return 2 * x};
+let triple = x => {return 3 * x};
+
+// 没有参数时需要括号
+let getRandom = ()=> { return Math.random();}
+
+// 多个参数需要括号
+let sum = (a, b) => { return a + b};
+
+// 无效的写法
+let mutiply = a,b => { return a * b};*/
+
+/*// 以下两种方式都有效而且会返回相应的值
+let double = x => {return x * 2};
+// 箭头函数省略大括号会隐式的返回值
+let triple = x => x * 3;
+// 进行赋值
+let value = {};
+let setName = (x) => x.name = 'Sans';
+setName(value);
+console.log(value.name); // Sans
+//无效的写法
+let mutiply = (a,b) => return a * b*/
+
+
+// 函数标识符 name
+function foo(){};
+let bar = function (){};
+let baz = ()=> {};
+
+console.log(foo.name);  // foo
+console.log(bar.name);  // bar
+console.log(baz.name);  // baz
+console.log((() => {}).name); // ''
+console.log(new Function().name); // anonymous
+</script>
+</html>
