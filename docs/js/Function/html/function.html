@@ -34,7 +34,7 @@ console.log(value.name); // Sans
 let mutiply = (a,b) => return a * b*/
 
 
-// 函数标识符 name
+/*// 函数标识符 name
 function foo(){};
 let bar = function (){};
 let baz = ()=> {};
@@ -43,6 +43,44 @@ console.log(foo.name);  // foo
 console.log(bar.name);  // bar
 console.log(baz.name);  // baz
 console.log((() => {}).name); // ''
-console.log(new Function().name); // anonymous
+console.log(new Function().name); // anonymous*/
+
+/*// 函数前缀 给设置函数 获取函数或者通过 bind实例化的函数会带有前缀
+function foo(){};
+console.log(foo.bind(null).name);
+let dog = {
+    years : 1,
+    get age(){
+        return this.years
+    },
+    set age(newAge){
+        this.years = newAge
+    }
+}
+let propertyDescriptor = Object.getOwnPropertyDescriptor(dog,'age');
+// 相当于直接遍历调用上述方法
+let propertyDescriptors = Object.getOwnPropertyDescriptors(dog);
+console.log(propertyDescriptor);
+console.log(propertyDescriptors);
+
+console.log(propertyDescriptor.get.name);  // get age
+console.log(propertyDescriptor.set.name);  // set age*/
+
+/*// arguments的值始终与对应的命名参数同步
+function add(num1, num2){
+    arguments[1] = 30;
+    console.log(arguments[0] + num2);
+}
+add(10,20) // 40*/
+
+// 将arguments对象包装在函数中然后传递给箭头函数
+function foo(){
+   let bar = ()=> {
+       console.log(arguments[0]);
+   }
+   bar();
+};
+foo(5) // 5
+
 </script>
 </html>
