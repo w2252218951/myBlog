@@ -5,6 +5,11 @@ module.exports = {
     host: 'localhost',
     port: 8080,
     themeConfig: {
+        valineConfig: {
+            appId: 'jrgMNHM035740D7e7zCypBv1-gzGzoHsz',// your appId
+            appKey: 'uwol9H84lOmxW9evygD7u8fr', // your appKey
+            visitor: true
+        },
         nav: [
             {text: '主页', link: '/'},
             {text: '心得', link: '/experience/utils'},
