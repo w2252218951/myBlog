@@ -8,149 +8,192 @@
 
 </body>
 <script>
-  /*// 以下两种方法都有效
-  let double = (x)=> {return 2 * x};
-  let triple = x => {return 3 * x};
-  
-  // 没有参数时需要括号
-  let getRandom = ()=> { return Math.random();}
-  
-  // 多个参数需要括号
-  let sum = (a, b) => { return a + b};
-  
-  // 无效的写法
-  let mutiply = a,b => { return a * b};*/
-  
-  /*// 以下两种方式都有效而且会返回相应的值
-  let double = x => {return x * 2};
-  // 箭头函数省略大括号会隐式的返回值
-  let triple = x => x * 3;
-  // 进行赋值
-  let value = {};
-  let setName = (x) => x.name = 'Sans';
-  setName(value);
-  console.log(value.name); // Sans
-  //无效的写法
-  let mutiply = (a,b) => return a * b*/
-  
-  
-  /*// 函数标识符 name
-  function foo(){};
-  let bar = function (){};
-  let baz = ()=> {};
-  
-  console.log(foo.name);  // foo
-  console.log(bar.name);  // bar
-  console.log(baz.name);  // baz
-  console.log((() => {}).name); // ''
-  console.log(new Function().name); // anonymous*/
-  
-  /*// 函数前缀 给设置函数 获取函数或者通过 bind实例化的函数会带有前缀
-  function foo(){};
-  console.log(foo.bind(null).name);
-  let dog = {
-      years : 1,
-      get age(){
-          return this.years
-      },
-      set age(newAge){
-          this.years = newAge
-      }
-  }
-  let propertyDescriptor = Object.getOwnPropertyDescriptor(dog,'age');
-  // 相当于直接遍历调用上述方法
-  let propertyDescriptors = Object.getOwnPropertyDescriptors(dog);
-  console.log(propertyDescriptor);
-  console.log(propertyDescriptors);
-  
-  console.log(propertyDescriptor.get.name);  // get age
-  console.log(propertyDescriptor.set.name);  // set age*/
-  
-  /*// arguments的值始终与对应的命名参数同步
-  function add(num1, num2){
-      arguments[1] = 30;
-      console.log(arguments[0] + num2);
-  }
-  add(10,20) // 40*/
-  
-  /*
-  // 将arguments对象包装在函数中然后传递给箭头函数
-  function foo(){
-     let bar = ()=> {
-         console.log(arguments[0]);
-     }
-     bar();
-  };
-  foo(5) // 5
-  */
-  
-  /*
-  // ECMA5.1之前设置默认参数
-  function making(name){
-      name = (typeof name !== 'undefined') ? name : 'Henry'
-      return `King ${name} VIII`
-  }
-  console.log(making());   //  King Henry VIII
-  console.log(making('Louis')); // King Louis VIII
-  */
-  
-  /*    // 使用 =  设置默认参数
-      function making(name = 'Henry') {
-          return `King ${name} VIII`
-      }
-      console.log(making('Louis'));   //  King Louis VIII
-      console.log(making()); //  King Henry VIII*/
-  
-  /*//将函数设置成默认参数
-  let romanNumerals = ['I', 'II', 'III', 'IV', 'V', 'VI'];
-  let ordinality = 0;
-  
-  function getNumerals(){
-      // 每次调用后递增
-      return romanNumerals[ordinality++]
-  }
-  
-  function making(name = 'Henry', numerals = getNumerals()){
-      return `King ${name} ${numerals}`
-  }
-  
-  console.log(making());   // 'King Henry I'
-  console.log(making('Louis', 'XVI')); // 'King Louis XVI'
-  console.log(making());  // 'King Henry II'
-  console.log(making());  // 'King Henry III'*/
-  
-  /*
-    // 调用时不传第一个参数汇报材料
-      function making(name = numerals, numerals = 'VIII'){
-          return `King ${name} ${numerals}`
-      }
-      making()  //  Cannot access 'numerals' before initialization*/
-  
-  /*
-  // 调用时不穿第二个参数会报错
-  function making(name = 'Henry', numerals = defaultNumeral) {
-      let defaultNumeral = 'VII';
-      return `King ${name} ${numerals}`;
-  }
-  
-  making(); // defaultNumeral is not defined
-  */
-  
-  let values = [1, 2, 3, 4];
-  
-  function getSum() {
+/*// 以下两种方法都有效
+let double = (x)=> {return 2 * x};
+let triple = x => {return 3 * x};
+
+// 没有参数时需要括号
+let getRandom = ()=> { return Math.random();}
+
+// 多个参数需要括号
+let sum = (a, b) => { return a + b};
+
+// 无效的写法
+let mutiply = a,b => { return a * b};*/
+
+/*// 以下两种方式都有效而且会返回相应的值
+let double = x => {return x * 2};
+// 箭头函数省略大括号会隐式的返回值
+let triple = x => x * 3;
+// 进行赋值
+let value = {};
+let setName = (x) => x.name = 'Sans';
+setName(value);
+console.log(value.name); // Sans
+//无效的写法
+let mutiply = (a,b) => return a * b*/
+
+
+/*// 函数标识符 name
+function foo(){};
+let bar = function (){};
+let baz = ()=> {};
+
+console.log(foo.name);  // foo
+console.log(bar.name);  // bar
+console.log(baz.name);  // baz
+console.log((() => {}).name); // ''
+console.log(new Function().name); // anonymous*/
+
+/*// 函数前缀 给设置函数 获取函数或者通过 bind实例化的函数会带有前缀
+function foo(){};
+console.log(foo.bind(null).name);
+let dog = {
+    years : 1,
+    get age(){
+        return this.years
+    },
+    set age(newAge){
+        this.years = newAge
+    }
+}
+let propertyDescriptor = Object.getOwnPropertyDescriptor(dog,'age');
+// 相当于直接遍历调用上述方法
+let propertyDescriptors = Object.getOwnPropertyDescriptors(dog);
+console.log(propertyDescriptor);
+console.log(propertyDescriptors);
+
+console.log(propertyDescriptor.get.name);  // get age
+console.log(propertyDescriptor.set.name);  // set age*/
+
+/*// arguments的值始终与对应的命名参数同步
+function add(num1, num2){
+    arguments[1] = 30;
+    console.log(arguments[0] + num2);
+}
+add(10,20) // 40*/
+
+/*
+// 将arguments对象包装在函数中然后传递给箭头函数
+function foo(){
+   let bar = ()=> {
+       console.log(arguments[0]);
+   }
+   bar();
+};
+foo(5) // 5
+*/
+
+/*
+// ECMA5.1之前设置默认参数
+function making(name){
+    name = (typeof name !== 'undefined') ? name : 'Henry'
+    return `King ${name} VIII`
+}
+console.log(making());   //  King Henry VIII
+console.log(making('Louis')); // King Louis VIII
+*/
+
+/*    // 使用 =  设置默认参数
+    function making(name = 'Henry') {
+        return `King ${name} VIII`
+    }
+    console.log(making('Louis'));   //  King Louis VIII
+    console.log(making()); //  King Henry VIII*/
+
+/*//将函数设置成默认参数
+let romanNumerals = ['I', 'II', 'III', 'IV', 'V', 'VI'];
+let ordinality = 0;
+
+function getNumerals(){
+    // 每次调用后递增
+    return romanNumerals[ordinality++]
+}
+
+function making(name = 'Henry', numerals = getNumerals()){
+    return `King ${name} ${numerals}`
+}
+
+console.log(making());   // 'King Henry I'
+console.log(making('Louis', 'XVI')); // 'King Louis XVI'
+console.log(making());  // 'King Henry II'
+console.log(making());  // 'King Henry III'*/
+
+/*
+  // 调用时不传第一个参数汇报材料
+    function making(name = numerals, numerals = 'VIII'){
+        return `King ${name} ${numerals}`
+    }
+    making()  //  Cannot access 'numerals' before initialization*/
+
+/*
+// 调用时不穿第二个参数会报错
+function making(name = 'Henry', numerals = defaultNumeral) {
+    let defaultNumeral = 'VII';
+    return `King ${name} ${numerals}`;
+}
+
+making(); // defaultNumeral is not defined
+*/
+
+/*let values = [1, 2, 3, 4];
+
+function getSum() {
     console.log(arguments);
-  
     let sum = 0;
     for (let i = 0; i < arguments.length; ++i) {
-      sum += arguments[i];
+        sum += arguments[i];
     }
     return sum;
-  }
-  
-  console.log(getSum(values)); // 01,2,3,4
-  // arguments [[1,2,3,4]]
-  console.log(getSum.apply(null, values)); // 10
-  // arguments [1,2,3,4]
+}
+
+console.log(getSum(values)); // 01,2,3,4
+// arguments [[1,2,3,4]]
+console.log(getSum.apply(null, values)); // 10
+// arguments [1,2,3,4]*/
+
+/*// 在普通函数和箭头函数中使用扩展操作符命令参数，同时可以设置默认参数
+function getProduct(a, b, c = 1) {
+return a * b * c;
+}
+
+let getSum = (a, b, c = 0) => {
+return a + b + c;
+};
+console.log(getProduct(...[1, 2])); // 2
+console.log(getProduct(...[1, 2, 3])); // 6
+console.log(getProduct(...[1, 2, 3, 4])); /6
+
+console.log(getSum(...[0, 1]));; //1
+console.log(getSum(...[0, 1, 2]));; // 3
+console.log(getSum(...[0, 1, 2, 3]));; // 3*/
+
+/*// 通过扩展操作符将独立的参数整合为一个数组。
+function getSum(...values){
+    console.log(values); // [1, 2, 3]
+    return values.reduce((total, pre)=> total + pre, 0)
+}
+
+console.log(getSum(1, 2, 3)); // 6*/
+
+/*// 因为收集参数是可变的，所以将他作为最后一个参数
+// 不行
+function getProduct(...values, lastValue){}
+
+// 可行
+function ignoreFirst(firstValue,...values){
+    console.log(values);
+}
+ignoreFirst(); // []
+ignoreFirst(1); // []
+ignoreFirst(1,2); // [2]
+ignoreFirst(1,2, 3); // [2, 3]*/
+
+
+/*// 通过收集参数实现与arguments相同的逻辑
+let getSum = (...values) => {
+    return values.reduce((total, pre) => total + pre, 0);
+};
+console.log(getSum(1, 2, 3)); // 6*/
 </script>
 </html>

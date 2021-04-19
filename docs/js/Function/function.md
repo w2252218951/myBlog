@@ -265,3 +265,105 @@ function making(name = 'Henry', numerals = defaultNumeral) {
 扩展操作符既可以用于**调用函数时传参**，也可以用于**定义函数参数**。
 
 ### 6.1、扩展参数
+
+```js
+let values = [1, 2, 3, 4];
+function getSum() {
+    console.log(arguments);
+    let sum = 0;
+    for (let i = 0; i < arguments.length; ++i) {
+        sum += arguments[i];
+    }
+    return sum;
+}
+console.log(getSum(values)); // 01,2,3,4
+// arguments [[1,2,3,4]]
+console.log(getSum.apply(null, values)); // 10
+// arguments [1,2,3,4]
+
+
+```
+
+通过可迭代对象的扩展操作符，可将迭代对象作为一个参数进行拆分，并将迭代返回的每个值单独传入。
+
+```js
+console.log(getSum(...values)); // 10 
+console.log(getSum(-1, ...values)); // 9 
+console.log(getSum(...values, 5)); // 15 
+console.log(getSum(-1, ...values, 5)); // 14 
+console.log(getSum(...values, ...[5,6,7])); // 28 
+```
+
+在普通函数和箭头函数中也可将扩展操作符用于命名参数，同时也能使用命名参数。
+
+```js
+// 在普通函数和箭头函数中使用扩展操作符命令参数，同时可以设置默认参数
+function getProduct(a, b, c = 1) {        
+  return a * b * c;
+}
+
+let getSum = (a, b, c = 0) => {
+  return a + b + c;
+};
+console.log(getProduct(...[1, 2])); // 2
+console.log(getProduct(...[1, 2, 3])); // 6
+console.log(getProduct(...[1, 2, 3, 4])); /6
+
+console.log(getSum(...[0, 1]));; //1
+console.log(getSum(...[0, 1, 2]));; // 3
+console.log(getSum(...[0, 1, 2, 3]));; // 3
+```
+
+### 6.2、收集参数
+
+扩展操作符能将**不同长度**的**独立参数**组合为**同一个数组**。有点类似`arguments`对象，但得到是一个`Array`实例
+
+```js
+// 通过扩展操作符将独立的参数整合为一个数组。
+function getSum(...values){
+    console.log(values); // [1, 2, 3]
+    return values.reduce((total, pre)=> total + pre, 0)
+}
+
+console.log(getSum(1, 2, 3)); // 6
+```
+
+收集参数的前面如果还有命令参数，则只会收集其余的参数；如果没有则会得到空数组。
+
+<mark>因为收集参数是可变的，所以要将他作为作为最后一个参数</mark>
+
+```js
+// 因为收集参数是可变的，所以将他作为最后一个参数
+// 不行
+function getProduct(...values, lastValue){}
+
+// 可行
+function ignoreFirst(firstValue,...values){
+    console.log(values);
+}
+ignoreFirst(); // []
+ignoreFirst(1); // []
+ignoreFirst(1,2); // [2]
+ignoreFirst(1,2, 3); // [2, 3]
+```
+
+<mark>可以通过箭头函数实现与`arguments`一样的逻辑</mark>
+
+```js
+// 通过收集参数实现与arguments相同的逻辑
+let getSum = (...values) => {
+    return values.reduce((total, pre) => total + pre, 0);
+};
+console.log(getSum(1, 2, 3)); // 6
+```
+
+收集参数并不会影响到`arguments`对象，因为其仍然传入的是调用时传入的参数
+
+```js
+function getSum(...values){
+    console.log(arguments.length)  // 3
+    console.log(arguments) // [1,2,3]
+    console.log(values);   // [1,2,3]
+}
+console.log(getSum(1,2,3)); 
+```
