@@ -163,3 +163,105 @@ function foo(){
 };
 foo(5) // 5
 ```
+
+:::tip
+
+`ECMAScript`中所有**参数的传递**都是**按值传递**的，**不能**按**引用**传递参数。如果将对象作为参数传递，那么传递的就是这个参数的引用。
+
+:::
+
+## 4、没有重载
+
+**什么是重载？**
+
+一个函数可以有两个定义，只要签名（接受参数的类型和数量）不同就行。
+
+`ECMAScript`中是**没有重载**这个概念的，因为**参数**是**由零个或多个值**得**数组**表示的。**没有函数签名**，自然没有重载。
+
+:::tip
+
+1. 如果在`ECMAScript`中定义两个同名的函数，则后定义的会覆盖先定义的；
+
+2. 可以通过**检查参数的类型和数量**，然后分别**执行不同的逻辑**来**模拟**函数重载；
+
+3. 将函数名当做指针有助于理解为什么`ECMAScript`没有函数重载，因为其会被后定义的覆盖
+
+:::
+
+## 5、默认参数值
+
+在`ECMAScript5.1`以前，怎样实现默认参数的？
+
+答：通过检查某个参数是否等于`undefined`,如果是则意味着没有传递参数。
+
+```js
+// ECMA5.1之前设置默认参数
+function making(name){
+    name = (typeof name !== 'undefined') ? name : 'Henry'
+    return `King ${name} VIII`
+}
+console.log(making());   //  King Henry VIII
+console.log(making('Louis')); // King Louis VIII
+```
+
+在`ES6`中，只要在函数定义中的参数后面用 `=`就可以为参数赋一个默认值
+
+```js
+// 使用 =  设置默认参数
+function making(name = 'Henry') {
+    return `King ${name} VIII`
+}
+console.log(making('Louis'));   //  King Louis VIII
+console.log(making()); //  King Henry VIII
+```
+
+在使用默认参数时，`arguments`对象的值始终以传入的值为准。
+
+<mark>默认参数值并不限于原始值或对象类型，也可以使用调用函数返回的值</mark>
+
+```js
+//将函数设置成默认参数
+let romanNumerals = ['I', 'II', 'III', 'IV', 'V', 'VI'];
+let ordinality = 0;
+
+function getNumerals(){
+    // 每次调用后递增
+    return romanNumerals[ordinality++]
+}
+
+function making(name = 'Henry', numerals = getNumerals()){
+    return `King ${name} ${numerals}`
+}
+
+console.log(making());   // 'King Henry I'
+console.log(making('Louis', 'XVI')); // 'King Louis XVI'
+console.log(making());  // 'King Henry II'
+console.log(making());  // 'King Henry III''King Henry III'
+```
+
+### 默认参数和作用域和暂时性死区
+
+<mark>参数初始化顺序遵循“暂时性死区”规则。前面定义的参数不能引用后面定义的，会抛错</mark>
+
+```js
+    // 调用时不传第一个参数汇报材料
+    function making(name = numerals, numerals = 'VIII'){
+        return `King ${name} ${numerals}`
+    }
+    making()  //  Cannot access 'numerals' before initialization
+```
+
+```js
+function making(name = 'Henry', numerals = defaultNumeral) {
+    let defaultNumeral = 'VII'
+    return `King ${name} ${numerals}`;
+}
+```
+
+## 6、参数扩展与收集
+
+`ECMAScript6`中新增了扩展操作符。其最有用的作用场景就是**函数定义中的参数列表**
+
+扩展操作符既可以用于**调用函数时传参**，也可以用于**定义函数参数**。
+
+### 6.1、扩展参数
