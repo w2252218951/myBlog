@@ -18,6 +18,7 @@ module.exports = {
                     {text: 'JS', link: '/js/'},
                     {text: 'HTML', link: '/html/'},
                     {text: 'CSS', link: '/css/'},
+                    {text: 'Vue', link: '/vue/experience/keepAlive'},
                 ]
             },
             {text: '关于', link: '../about'}
@@ -35,7 +36,7 @@ module.exports = {
         },
         // 自动形成侧边导航
         subSidebar: 'auto',
-        sidebar: 'auto',
+        // sidebar: 'auto',
         sidebarDepth: 5,
         displayAllHeaders: false,
         sidebar: {
@@ -60,6 +61,15 @@ module.exports = {
                     ]
                 },
             ],
+            '/vue/': [
+                {
+                    title: '心得',
+                    collapsable: true,
+                    children: [
+                        'experience/keepAlive',
+                    ]
+                },
+            ],
             '/css/': [
                 '',
                 'skill'
@@ -69,7 +79,7 @@ module.exports = {
             ]
         },
         // 最后更新时间
-        lastUpdated: 'Last Updated',
+        lastUpdated: '最后更新时间',
         // 作者
         author: 'sans',
         markdown: {

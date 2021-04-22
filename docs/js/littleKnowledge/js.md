@@ -1,11 +1,11 @@
 ---
 title: 小知识
 tags:
-- js
-  categories:
+- js 
+categories:
 - 数组
-- 日常
-  date: 2021-04-19
+- 日常 
+date: 2021-04-19
 ---
 
 ## 1、JS中`Array.apply(null,Array(3))`与`Array(3)`的区别是什么？
