@@ -282,7 +282,7 @@ console.log(getSum.apply(null, values)); // 10
 // arguments [1,2,3,4]
 ```
 
-通过可迭代对象的扩展操作符，可将迭代对象作为一个参数进行拆分，并将迭代返回的每个值单独传入。
+通过**可迭代对象**的扩展操作符，可将**迭代对象**作为一个参数进行拆分，并将迭代返回的每个值单独传入。
 
 ```js
 console.log(getSum(...values)); // 10 
@@ -305,7 +305,7 @@ let getSum = (a, b, c = 0) => {
 };
 console.log(getProduct(...[1, 2])); // 2
 console.log(getProduct(...[1, 2, 3])); // 6
-console.log(getProduct(...[1, 2, 3, 4])); /6
+console.log(getProduct(...[1, 2, 3, 4])); //6
 
 console.log(getSum(...[0, 1]));; //1
 console.log(getSum(...[0, 1, 2]));; // 3
@@ -370,7 +370,7 @@ console.log(getSum(1,2,3));
 
 **区别：**
 
-- `JS`引擎在执行任何代码之前，会先读取函数声明，然后在执行上下文生成函数定义。这个过程被称为**函数声明提升**
+- `JS`引擎在执行任何代码之前，会**先读取**函数声明，然后在执行上下文生成函数定义。这个过程被称为**函数声明提升**
 
 - 函数表达式必须等到代码执行到那一行，才会在执行上下文中生成函数定义。
 
@@ -405,7 +405,7 @@ function sum() {}
 
 :::
 
-## 8、函数作为值
+## 8、函数作为值 p298
 
 为什么函数能够作为值进行传参？
 
@@ -416,3 +416,177 @@ function sum() {}
 怎样对一个数组对象进行排序？
 
 通过`sort()`方法，该方法接受两个需要比较的值。
+
+```js
+// 通过 sort 方法进行数组对象中属性的排序
+function createComparisonFunction(propertyName){
+    // sort 会在function中传入两个参数
+    return function(object1, object2){
+        let value1 = object1[propertyName];
+        let value2 = object2[propertyName]
+        if(value1 < value2){
+            return -1
+        }else if(value1 > value2){
+            return  1
+        }else {
+            return 0
+        }
+    }
+}
+let data = [
+    {name: "Zachary", age: 28},
+    {name: "Nicholas", age: 29}
+]
+data.sort(createComparisonFunction("name"));
+```
+
+## 9、函数内部 p299
+
+<mark>在`ECMAScript5`中，函数内部有两个特殊的对象，`arguments`和`this`</mark>
+
+<mark>`ECMAscript6`又新增了`new.target`属性</mark>
+
+### 9.1、 arguments
+
+`arguments`对象是什么？
+
+它是一个类数组对象，包含调用函数时传入的所有参数，并且只以`function`关键词定义函数时（相对于构造函数）才会存在。
+
+<mark>`arguments`对象有一个`callee`属性，是一个指向`arguments`对象所在函数的指针</mark>
+
+下面举个例子：
+
+```js
+// 经典的阶乘函数
+function factorial(num){
+    if(num <=1){
+        return 1
+    }else {
+        return  num * function(num - 1)
+    }
+}
+```
+
+上面这个列子必须保证函数名是`factorial`，从而导致紧密耦合。使用`arguments.callee`可以让函数逻辑和函数名解耦。
+
+```js
+// 使用 arguments.callee 进行解耦
+function factorial(num){
+    if( num <= 1){
+        return 1
+    }else {
+       // arguments.callee 是指向arguments对象所在函数的指针
+        console.log(arguments.callee);
+        return  num * arguments.callee(num - 1);
+    }
+}
+let trueFactorial = factorial;
+factorial = function(){
+    return 0
+}
+console.log(trueFactorial(5)); // 120
+console.log(factorial(5)); // 0
+```
+
+`trueFactorial `变量被赋值为 `factorial`，实际上把同一个函数的指针又保存到了另一个位置。同时`callee`指向的是其`arguments`对象所在函数的指针，所以无论怎么改变都是最初的函数。
+
+### 9.2、 this p300
+
+<mark>`this`在**标准函数**和**箭头函数**中存在着差异。</mark>
+
+- 标准函数中：
+  
+  `this`引用的是把函数当成方法调用的上下文对象。通常称其为`this`值（在全局上下文中调用函数时，`this`指向`window`）
+  
+  `this`引用哪个对象必须到函数被调用时才能确定，也可以理解为 
+  
+  <mark>谁调用了这个函数，`this`就指向谁。</mark>
+  
+  ```js
+  window.color = 'red'; 
+  let o = { 
+   color: 'blue' 
+  }; 
+  function sayColor() { 
+   console.log(this.color); 
+  } 
+  sayColor(); // 'red' 
+  o.sayColor = sayColor;  
+  // 此时将o 将 sayColor()函数当做方法调用 
+  // 因此this引用的是 o
+  o.sayColor(); // 'blue'
+  ```
+
+- 箭头函数中：
+  
+  `this`引用的是定义箭头函数的上下文。
+  
+  ```js
+  window.color = 'red'; 
+  let o = { 
+   color: 'blue' 
+  }; 
+  let sayColor = () => console.log(this.color); 
+  sayColor(); // 'red' 
+  o.sayColor = sayColor; 
+  o.sayColor(); // 'red' 
+  ```
+
+怎样在事件回调和定时回调是确保`this`的指向？
+
+将回调函数写成箭头函数就行了。<mark>因为箭头函数中的`this`会保留定义该函数时的上下文</mark>
+
+```js
+function King(){
+    this.royaltyName = 'Henry';
+    // this 引用 King 的实例
+    setTimeout(()=> {
+        console.log(this.royaltyName);
+    }, 1000)
+}
+function Queen(){
+    this.royaltyNmae = 'Elizabeth';
+    // this 引用 window 对象
+    setTimeout(function() {
+        console.log(this.royaltyNmae);
+    },1000)
+}
+new King(); // Henry
+new Queen() // undefined
+```
+
+### 9.3、caller p301
+
+`ES5`中给函数定义的一个属性`caller`，<mark>该属性引用的是调用当前函数的函数</mark>如果是全局作用域中调用的就是`null`
+
+```js
+function outer(){
+    inner()
+}
+function inner(){
+    console.log(inner.caller);
+}
+outer() 
+/*ƒ outer(){
+    inner()
+}*/
+```
+
+可以通过`arguments.callee.cller`降低耦合度
+
+```js
+function outer(){
+    inner()
+}
+function inner(){
+    console.log(arguments.callee.caller);
+}
+```
+
+### 9.4、 new.target p301
+
+`ES6`中新增了检测函数是否使用`new`关键词调用的`new.target`属性。如果正常使用就返回`undefined`;如果使用的是`new`关键词调用，则`new.target`将引用被调用的构造函数。
+
+```js
+
+```
