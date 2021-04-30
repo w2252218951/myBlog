@@ -308,6 +308,7 @@ inner()
 */
 
 
+/*
 // 通过 new.target 判断是否是构造函数
 function King(){
     if(!new.target){
@@ -315,8 +316,40 @@ function King(){
     }
     console.log('King instantiated using "new"');
 }
-new King();
+new King(); // King instantiated using "new"
 King(); // Uncaught King must be instantiated using "new"
+*/
 
+/*// 函数自有属性 length 用来判断命名参数的个数
+function sayName(name){
+    console.log(name);
+}
+function sum(num1 , num2){
+    return num1 + num2
+}
+function sayHi(){
+    console.log('h1');
+}
+
+console.log(sayName.length); // 1
+console.log(sum.length); // 2
+console.log(sayHi.length); // 0*/
+
+function sum(num1 , num2){
+    return num1 + num2
+}
+function callSum1(num1, num2){
+    return sum.apply(this, arguments) // 传入 arguments 对象
+}
+function callSum2(num1, num2){
+    return sum.apply(this, [num1, num2]) // 传入数组
+}
+function handleSum(num1, num2){
+    return sum(...arguments)
+}
+
+console.log(callSum1(10, 10));
+console.log(callSum2(10, 10));
+console.log(handleSum(10, 10));
 </script>
 </html>

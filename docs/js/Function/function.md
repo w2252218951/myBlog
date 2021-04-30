@@ -588,5 +588,76 @@ function inner(){
 `ES6`中新增了检测函数是否使用`new`关键词调用的`new.target`属性。如果正常使用就返回`undefined`;如果使用的是`new`关键词调用，则`new.target`将引用被调用的构造函数。
 
 ```js
-
+// 通过 new.target 判断是否是构造函数
+function King(){
+    if(!new.target){
+        throw 'King must be instantiated using "new"'
+    }
+    console.log('King instantiated using "new"');
+}
+new King(); // King instantiated using "new"
+King(); // Uncaught King must be instantiated using "new"
 ```
+
+## 10、属性和方法
+
+`ECMA`中的函数**是对象**，因此有**属性和方法**。每个函数都有两个属性`length`和`arguments`,`es6`中新增了只读属性`name`
+
+`length`：属性保存的是函数定义**命名参数的个数**
+
+```js
+function sayName(name){
+    console.log(name);
+}
+function sum(num1 , num2){
+    return num1 + num2
+}
+function sayHi(){
+    console.log('h1');
+}
+
+console.log(sayName.length); // 1
+console.log(sum.length); // 2
+console.log(sayHi.length); // 0
+```
+
+`prototype`：是保存所有引用类型实例方法的地方。
+
+其特点：`toString()、valueOf()`实际上都保存在`prototype`上，进由所有实例方法**共享** 
+
+                且`prototype`是不可被枚举的，因此`for-in`循环不会返回这个属性。
+
+函数中还有两个方法`apply()`和`call()`。都以指定的`this`调用函数。
+
+- 即设置调用函数时函数体内`this`的值。
+
+- `apply`接收两个参数：函数内`this`值和一个参数数组。可以是`Array`实例，也可以是`arguments`对象
+
+- `call` 作用与`apply()` 一样：但是从第一个参数后面的参数起，都要逐个传入调用。
+
+```js
+function sum(num1 , num2){
+    return num1 + num2
+}
+function callSum1(num1, num2){
+    return sum.apply(this, arguments) // 传入 arguments 对象
+}
+function callSum2(num1, num2){
+    return sum.apply(this, [num1, num2]) // 传入数组
+}
+function handleSum(num1, num2){
+    return sum(...arguments)
+}
+
+console.log(callSum1(10, 10));
+console.log(callSum2(10, 10));
+console.log(handleSum(10, 10));
+```
+
+在这个例子中，`callSum1()`会调用 `sum()`函数，将 this 作为函数体内的 this 值（这里等于window，因为是在全局作用域中调用的）传入，同时还传入了 `arguments `对`callSum2()`也会调用` sum()`函数，但会传入参数的数组。
+
+::: tip
+在严格模式下，调用函数时如果没有指定上下文对象，则 this 值不会指向 window。
+除非使用 apply()或 call()把函数指定给一个对象，否则 this 的值会变成 undefined。
+
+:::
