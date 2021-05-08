@@ -599,7 +599,7 @@ new King(); // King instantiated using "new"
 King(); // Uncaught King must be instantiated using "new"
 ```
 
-## 10、属性和方法
+## 10、属性和方法 p 302
 
 `ECMA`中的函数**是对象**，因此有**属性和方法**。每个函数都有两个属性`length`和`arguments`,`es6`中新增了只读属性`name`
 
@@ -661,3 +661,308 @@ console.log(handleSum(10, 10));
 除非使用 apply()或 call()把函数指定给一个对象，否则 this 的值会变成 undefined。
 
 :::
+
+`apply()和call()`主要作用**不是传参**，而是控制函数**调用上下文即函数体内`this`值**的能力。
+
+```js
+// 通过apply() 和 call() 控制函数上下文中 this 的值
+window.color = 'red';
+let o = {
+    color : 'blue'
+}
+function sayColor(){
+    console.log(this.color);
+}
+sayColor()  // red
+sayColor.call(this)  // red    this => window
+sayColor.call(window) // red
+sayColor.call(o)  // blue // this => 将上下文切换到o
+```
+
+`ES5`中新增了`bind()`方法。该方法会创建一个新的实例函数。即`this`值会绑定到传给`bind()`的对象；
+
+```js
+// 将 this 的值绑定传给 bind 对象
+window.color = 'red';
+var o = {
+    color: 'blue',
+}
+function sayColor(){
+    console.log(this.color);
+}
+// 将this的值绑定传给 bind 对象
+let objectSayColor = sayColor.bind(o);
+objectSayColor(); // blue
+```
+
+:::tip
+
+对函数而言，继承的方法` toLocaleString()和 toString()`始终返回**函数的代码**。返回代码的具体格式因浏览器而异。有的返回源代码，包含注释，而有的只返回代码的内部形式，会删除注释，甚至代码可能被解释器修改过。由于这些差异，因此不能在重要功能中依赖这些方法返回的值，而只应在调试中使用它们。
+
+<mark>继承的方法 valueOf()返回函数本身</mark>
+
+:::
+
+## 11、函数表达式 p304
+
+定义函数有两种方式：
+
+- 函数声明：
+  
+  ```js
+  function(arg0, num1, num2){
+      // 函数体
+  }
+  ```
+  
+  <mark>函数声明的关键就是`函数声明提升`。</mark>这种情况下，`js`引擎会先读取函数声明，然后执行代码。
+
+- 函数表达式
+  
+  ```js
+  let functionName = function(arg0, arg1, arg2) { 
+   // 函数体 
+  };
+  ```
+  
+  **匿名函数**： `function`后面没有接标识符。（**匿名函数也被称为兰姆达函数**）。未赋值给其他变量的匿名函数的`name`属性是空字符串。
+
+<mark>理解函数声明和函数表达式之前的区别，关键是理解声明提升</mark>
+
+## 12、递归
+
+**p307**
+
+**递归函数** 通常是一个函数通过名称调用自己。
+
+```js
+function factorial(num){
+    if(num <=1){
+        return 1
+    }else {
+        return  num * factorial(num-1)
+    }
+}
+```
+
+<mark>通过`arguments.callee`可以确保通过什么变量都能调用这个函数不出问题</mark>
+
+<mark>编写递归函数时`arguments.callee`是引用当前函数的首选。</mark>
+
+<mark>需要注意的是在严格模式下，是不能访问该方法的。可以使用**命名函数表达式**</mark>
+
+```js
+// 命名函数表达式  相当于给函数添加一个标识符
+// 只能在函数作用域中使用
+const factorial = (function f(num){
+    if(num <= 1){
+        return 1
+    }else {
+        return num * f(num - 1)
+    }
+})
+```
+
+这里创建了一个命名函数表达式 f()，然后将它赋值给了变量 factorial。即使把函数赋值给另
+一个变量，函数表达式的名称 f 也不变，因此递归调用不会有问题。这个模式在严格模式和非严格模式下都可以使用
+
+## 13、尾调用优化
+
+什么是尾调用？
+
+答：<mark>外部函数的返回值是一个内部函数的返回值</mark>
+
+```js
+// 外部函数的返回值是内部函数的返回值即尾调用
+function outerFunction(){
+    return innerFunction(); // 尾调用
+}
+```
+
+在`ES6`新增了一套内存管理优化机制，让`JS`引擎在满足条件时可以重用栈帧
+
+| **优化之前**                                                   | **优化之后**                                                     |
+|:---------------------------------------------------------- | ------------------------------------------------------------ |
+| 执行到`outerFUnction`函数体、第一个栈帧被推到栈上                           | 执行到`outerFunction`函数体、第一个栈帧被推到栈上                             |
+| 执行`outerFunction`函数体、到`return`语句，计算返回值必须先计算`innerFunction` | 执行`outerFunction`函数体，到达`return`语句。计算返回值必须先求知`innerFunction`。 |
+| 执行到`innerFunction`函数体，第二个栈帧被推倒栈上。                          | 引擎发现可将第一个栈帧弹出，因为`innerFunction`的返回值也是`outerFunction`的返回值。    |
+| 执行`innerFunction`函数体，计算其返回值                                | 弹出`outerFunction`栈帧。                                         |
+| 将返回值传回`outerFunction`,然后`outerFuncion`再返回值                 | 执行到`innerFunction`函数体,栈帧被推到栈上。                               |
+| 将栈帧弹出栈外                                                    | 执行`innerFuncion`函数体，计算其返回值。                                  |
+|                                                            | 将`innerFunction`的栈帧弹出栈外。                                     |
+
+区别：
+
+- 优化之前：每多一调用一次嵌套函数，就会多增加一个栈帧。
+
+- 优化之后：无论调用多少次嵌套函数，都只有一个栈帧。这也是`ES6`尾调用优化的关键。
+
+### 13.1、尾调用优化的条件
+
+**p307**
+
+尾调用优化的条件？
+
+答：确定外部帧真的没有必要存在了，具体条件如下：
+
+- 代码在严格模式下执行；
+
+- 外部函数的返回值是对尾调用函数的调用；
+
+- 尾调用函数返回后不需要执行额外的逻辑；
+
+- 尾调用函数不是引用外部函数作用域中自有变量的闭包；
+
+```js
+// 尾调用函数
+function innerFunction(){
+    return 1111
+}
+// 无优化： 尾调没有返回
+function outerFunction1(){
+    innerFunction()
+}
+// 无优化： 尾调没有直接返回
+function outerFunction2(){
+    let innerFunctionResult = innerFunction();
+    return innerFunctionResult;
+}
+// 无优化： 尾调用返回后被转换为字符串
+function outerFunction3(){
+    return innerFunction().toString()
+}
+// 无优化： 尾调用是一个闭包
+function outerFunction4(){
+    let foo = 'bar';
+    function innerFunction1(){ return foo}
+    return innerFunction1()
+}
+```
+
+<mark>符合尾调用条件的例子</mark>
+
+```js
+// 符合尾调用函数优化的例子
+"use strict"
+function innerFunction(c){
+    return c;
+}
+// 有优化：栈帧销毁前执行参数计算
+function outerFunction1(a, b){
+    return innerFunction(a + b)
+}
+// 有优化： 初始返回值不设计栈帧
+function outerFunction2(a,b){
+    if(a > b){
+        return b
+    }
+    return  innerFunction(a + b);
+}
+// 有优化：两个内部函数都在尾部
+function outerFunction3(condition){
+    return condition ? innerFunction() : innerFunction()
+}
+
+```
+
+<mark>无论是**递归尾调**还是**非递归尾调**，**都可优化**。引擎**不会区分调用的**是**自身函数**还是**其他函数**</mark>
+
+**为什么要在严格模式下使用栈帧？**
+
+答：因为在非严格模式下函数调用是允许使用`f.arguments`和`f.caller`,而他们引用的都是外部函数的栈帧。这就意味着不能优化了。因此尾调用函数优化必须在严格模式下，就是为了防止使用这些属性
+
+### 13.2、尾调用优化代码
+
+p309
+
+将简单的递归函数转换为待优化的代码以此加深理解
+
+```js
+// 普通的斐波那契数列函数 fib(n)的栈
+// 帧数的内存复杂度是 O(2n)
+)。
+function fib(n){
+    if(n < 2){
+        return n
+    }
+    return  fib(n -1 ) + fib(n - 2)
+}
+
+console.log(fib(6)); // 8
+```
+
+```js
+// 进行尾调优化
+'use strict'
+// 基础框架
+function fib(n){
+    return fibImpl(0, 1, n)
+}
+// 执行递归
+function fibImpl(a, b, n){
+    if(n === 0){
+        return n
+    }
+    return  fib(b, a+b ,n -1)
+}
+```
+
+## 14、闭包
+
+p309
+
+**什么是闭包？**
+
+匿名函数经常被人**误认为**是**闭包**。
+
+<mark>但是闭包指的是引用了另一个函数作用域中变量的函数，通常在嵌套函数中实现。</mark>
+
+```js
+function createComparisonFunction(propertyName) {
+    return function(object1, object2) {
+        let value1 = object1[propertyName]; // 引用外部函数变量
+        let value2 = object2[propertyName]; // 引用外部函数变量
+        if (value1 < value2) { 
+            return -1;
+        } else if (value1 > value2) {
+            return 1;
+        } else {
+            return 0;
+        }
+    };
+}} 
+ }; 
+} 
+```
+
+:::tip
+在调用一个函数时，会为这个函数调用创建一个执行上下文，并创建一个作用域链。然后用`arguments`和其他命名参数来初始化这个函数的活动对象。外部函数的活动对象是内部函数作用域上的第二个对象，这个作用域链一直向外串起了所有包含函数的活动对象，直到指向全局上下文才结束。
+
+:::
+
+```js
+function compare(value1, value2) {
+    if (value1 < value2) {
+        return -1;
+    } else if (value1 > value2) {
+        return 1;
+    } else {
+        return 0;
+    }
+}
+let result = compare(5, 10); 
+```
+
+`compare`是在全局上下文中调用的，第一次调用时会为`compare`创建一个包含`arguments、value1、value2`的活动对象，这个对象是其作用域链上的第一个对象。而全局上下文中的变量对象`compare、this、result`，则是其作用域链上的第二个对象。
+
+**什么是变量对象？以及什么是活动对象？**
+
+每个执行上下文中都**包含**一个其中**变量**的**对象**。
+
+<mark>**全局上下文中**的叫**全局变量**，**它会始终在代码执行期间存在**。</mark>
+
+<mark>局部上下文中的叫做**活动变量**，只在代码执行期间存在。</mark>
+
+在定义`compare()`函数时，会为它创建一个作用域链，预装载全局变量对象，并保存在`[[Scope]]`中。在调用这个函数时，会创建相应的执行上下文，然后通过复制函数的`[[Scope]]`来创建作用域。接着将创建函数的活动对象（用作变量对象）并将其推入作用域链的前端。这个例子中意味着`conpare()`函数执行上下文的作用域链中有两个变量对象：局部的变量对象和全局的变量对象。
+
+**作用域链**其实是一个包含指针的列表，每个指针都指向一个变量对象，但物理上并不包含相应的对象。
