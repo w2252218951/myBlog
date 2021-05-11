@@ -862,7 +862,6 @@ function outerFunction2(a,b){
 function outerFunction3(condition){
     return condition ? innerFunction() : innerFunction()
 }
-
 ```
 
 <mark>无论是**递归尾调**还是**非递归尾调**，**都可优化**。引擎**不会区分调用的**是**自身函数**还是**其他函数**</mark>
@@ -936,7 +935,7 @@ function createComparisonFunction(propertyName) {
 ```
 
 :::tip
-在调用一个函数时，会为这个函数调用创建一个执行上下文，并创建一个作用域链。然后用`arguments`和其他命名参数来初始化这个函数的活动对象。外部函数的活动对象是内部函数作用域上的第二个对象，这个作用域链一直向外串起了所有包含函数的活动对象，直到指向全局上下文才结束。
+在调用一个函数时，会为这个函数调用创建一个执行上下文，并创建一个作用域链。然后用`arguments`和其他命名参数来初始化这个函数的活动对象。**外部函数的活动对象是内部函数作用域上的第二个对象**，这个作用域链一直向外串起了所有包含函数的活动对象，直到指向全局上下文才结束。
 
 :::
 
@@ -966,3 +965,108 @@ let result = compare(5, 10);
 在定义`compare()`函数时，会为它创建一个作用域链，预装载全局变量对象，并保存在`[[Scope]]`中。在调用这个函数时，会创建相应的执行上下文，然后通过复制函数的`[[Scope]]`来创建作用域。接着将创建函数的活动对象（用作变量对象）并将其推入作用域链的前端。这个例子中意味着`conpare()`函数执行上下文的作用域链中有两个变量对象：局部的变量对象和全局的变量对象。
 
 **作用域链**其实是一个包含指针的列表，每个指针都指向一个变量对象，但物理上并不包含相应的对象。
+
+![image.png](https://upload-images.jianshu.io/upload_images/10868925-f946c88726d95380.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+函数内部的代码在**访问变量**时，会使用给定的名称从**作用域中查找**变量。函数**执行完毕**后，局部活动对象就**会被销毁**，内存中只剩下全局变量。
+
+函数内部定义的函数会将包含（外部）函数的活动对象添加到自己的作用域中。因此，在`createComparisonFuction()`中，匿名函数的作用域中实际包含了`createComparisonFunction()`活动对象。
+
+![image.png](https://upload-images.jianshu.io/upload_images/10868925-ad5d2dc22e1d85c4.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
+`createComparisonFunction()`返回匿名函数后，它的作用域链被初始化为包含 `createComparisonFunction()`的活动对象和全局变量对象。这样，匿名函数就可以访问到 `createComparisonFunction()`可以访问的所有变量。另一个有意思的副作用就是，`createComparisonFunction()`的活动对象并不能在它执行完毕后销毁，因为匿名函数的作用域链中仍然有对它的引用。在 `createComparisonFunction()`执行完毕后，其执行上下文的作用域链会销毁，但它的活动对象仍然会保留在内存中，直到匿名函数被销毁后才会被销毁：
+
+```js
+// 创建比较函数
+let compareNames = createComprisonFunction('name');
+// 调用函数
+let result = compareNames({name: 'sans'},{name: 'sn'});
+//  解除对函数的引用，释放内存
+let compareNames = null
+```
+
+把`compareNames`设置为`null`会解除对函数的引用。从而让垃圾回收程序可以将内存释放。作用域也会被销毁，出全局作用域外都可以被销毁。
+
+:::tip
+
+**注意**  因为闭包会保留它们包含函数的作用域，所以比其他函数更占用内存。过度使用闭
+包可能导致内存过度占用，因此建议仅在十分必要时使用。V8 等优化的 JavaScript 引擎会
+努力回收被闭包困住的内存，不过我们还是建议在使用闭包时要谨慎
+
+:::
+
+### 14.1、 this对象
+
+p312
+
+在闭包中使用`this`:
+
+- 没有使用箭头函数进行定义，则`this`对象会在运行时绑定到执行上下文。
+
+- 全局函数中调用，`this`在非严格模式下等于`window`、严格模式下等于`undefined`
+
+- 作为某个对象的方法调用：则`this`等于这个对象。
+
+- 匿名函数不会绑定到某个对象，意味着指向`window`,严格模式下指向`undefined`
+
+```js
+window.identity = 'The Window';
+let object = {
+    identity: 'My Object',
+    getIdentityFunc(){
+    // 闭包中 匿名函数返回的this不会绑定到某个对象
+        return function(){
+            return this.identity;
+        }
+    }
+}
+console.log(object.getIdentityFunc()()); // The Window
+```
+
+为什么匿名函数没有使用其**包含作用域**（`getIdentityFunc()`）的`this`对象呢？
+
+答：函数在每次调用时都会自动创建两个特殊变量`this和arguments`。内部函数永远不可能直接访问外部函数的这两个变量。但是能将`this`保存到闭包可以访问的另一个变量中就行了。
+
+```js
+window.identity = 'The Window';
+let object = {
+    identity: 'My Object',
+    getIdentityFunc(){
+        // 将外部函数中的this 进行保存
+        let that = this;
+        return function(){
+          return that.identity;
+        }
+    }
+}
+console.log(object.getIdentityFunc()()); // My Object
+```
+
+:::tip
+
+注意 `this `和` arguments `都是**不能直接**在内部函数中**访问的**。如果想访问包含作用域中
+的 `arguments `对象，则同样需要将其引用先保存到闭包能访问的另一个变量中。
+
+:::
+
+特殊情况下 `this`的指向会不同：
+
+```js
+// 特殊情况下 this的指向会不同
+window.identity = 'The Window'
+let object = {
+    identity : 'My Object',
+    getIdentity(){
+        return this.identity
+    }
+}
+console.log(object.getIdentity());  // My Object
+console.log((object.getIdentity)()); // My Object
+console.log((object.getIdentity = object.getIdentity)()); // The Window
+```
+
+- 第一行正常调用：因为`this.identity`就是`object.identity`。
+
+- 第二行：按照规范`object.identity`和`(object.identity)`是相等的，因此看起来加了括号后是对一个函数的引用，其实`this`值并没有改变
+
+- 第三行：先执行了赋值操作，然后调用赋值后的结果。<mark>因为赋值表达式的值是函数本身</mark>，`this`值不再与任何对象绑定

@@ -490,7 +490,7 @@ function fibImpl(a, b, n){
     };
 }*/
 
-function compare(value1, value2) {
+/*function compare(value1, value2) {
     if (value1 < value2) {
         return -1;
     } else if (value1 > value2) {
@@ -499,6 +499,52 @@ function compare(value1, value2) {
         return 0;
     }
 }
-let result = compare(5, 10);
+let result = compare(5, 10);*/
+
+
+/*// 创建比较函数
+let compareNames = createComprisonFunction('name');
+// 调用函数
+let result = compareNames({name: 'sans'},{name: 'sn'});
+//  解除对函数的引用，释放内存
+let compareNames = null*/
+
+/*window.identity = 'The Window';
+let object = {
+    identity: 'My Object',
+    getIdentityFunc(){
+    // 闭包中 匿名函数返回的this不会绑定到某个对象
+        return function(){
+            return this.identity;
+        }
+    }
+}
+console.log(object.getIdentityFunc()()); // The Window*/
+
+/*window.identity = 'The Window';
+let object = {
+    identity: 'My Object',
+    getIdentityFunc(){
+        // 将外部函数中的this 进行保存
+        let that = this;
+        return function(){
+          return that.identity;
+        }
+    }
+}
+console.log(object.getIdentityFunc()()); // My Object*/
+
+
+// 特殊情况下 this的指向会不同
+window.identity = 'The Window'
+let object = {
+    identity : 'My Object',
+    getIdentity(){
+        return this.identity
+    }
+}
+console.log(object.getIdentity());  // My Object
+console.log((object.getIdentity)()); // My Object
+console.log((object.getIdentity = object.getIdentity)()); // The Window
 </script>
 </html>
