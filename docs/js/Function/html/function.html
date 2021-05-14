@@ -535,7 +535,7 @@ let object = {
 console.log(object.getIdentityFunc()()); // My Object*/
 
 
-// 特殊情况下 this的指向会不同
+/*// 特殊情况下 this的指向会不同
 window.identity = 'The Window'
 let object = {
     identity : 'My Object',
@@ -545,6 +545,199 @@ let object = {
 }
 console.log(object.getIdentity());  // My Object
 console.log((object.getIdentity)()); // My Object
-console.log((object.getIdentity = object.getIdentity)()); // The Window
+console.log((object.getIdentity = object.getIdentity)()); // The Window*/
+
+/*// 旧版本ie 中 以下元素不会被销毁
+function assignHandler(){
+    let el = document.getElementById('someElement');
+    el.onclick = () => {
+        console.log(el.id);
+    }
+}*/
+
+/*// 解决闭包内存泄漏的方法
+function assignHandler(){
+    let el = document.getElementById('someElement'),
+        id = el.id;
+    el.onclick = ()=>  {
+        console.log(id);
+    }
+    el = null;
+}*/
+
+/*let divs = document.querySelectorAll('div');
+    // 达不到目的！
+for (var i = 0; i < divs.length; ++i) {
+    divs[i].addEventListener('click', function() {
+        console.log(i);
+    });
+}*/
+
+/*let divs = document.querySelectorAll('div');
+for (var i = 0; i < divs.length; ++i) {
+    divs[i].addEventListener('click', (function(frozenCounter) {
+        return function() {
+            console.log(frozenCounter);
+        };
+    })(i));
+}*/
+
+/*// 私有变量 包括 函数参数，局部参数 函数内部定义的其他函数
+function add(num1, num2){
+    let sum = num1  + num2;
+    return sum
+}*/
+
+/*// 在构造函数中创建特权方法
+function MyObject(){
+    let privaterVariable = 10;
+    function privaterFunction(){
+        return false
+    };
+    this.publicMethod = function(){
+        privaterVariable ++;
+        return privaterFunction()
+    }
+}*/
+
+
+/*
+// 通过私有变量和特权方法 隐藏不能修改的数据
+function Person(value){
+    this.getName = function(){
+        return name
+    };
+    this.setName = function(value){
+        name = value
+    }
+}
+let person = new Person('sans');
+console.log(person.getName()); // sans;
+person.setName('sn');
+console.log(person.getName()); // sn;
+*/
+
+/*(function() {
+    // 私有变量和私有函数
+    let privateVariable = 10;
+    function privateFunction() {
+        return false;
+    }
+    // 构造函数
+    MyObject = function() {};
+    // 公有和特权方法
+    MyObject.prototype.publicMethod = function() {
+        privateVariable++;
+        return privateFunction();
+    };
+})();*/
+
+/*
+(function() {
+    let name = '';
+    Person = function(value) {
+        name = value;
+    };
+    Person.prototype.getName = function() {
+        return name;
+    };
+    Person.prototype.setName = function(value) {
+        name = value;
+    };
+})();
+let person1 = new Person('Nicholas');
+console.log(person1.getName()); // 'Nicholas'
+person1.setName('Matt');
+console.log(person1.getName()); // 'Matt'
+let person2 = new Person('Michael');
+console.log(person1.getName()); // 'Michael'
+console.log(person2.getName()); // 'Michael'
+*/
+
+
+
+/*// 单例对象
+let singleton = {
+    name: 'value',
+    method(){
+        // 方法的代码
+    }
+}*/
+
+/*// 通过作用域链关联特权方法和私有变量
+let singleton = function(){
+    // 私有变量和私有函数
+    let privateVariable = 10;
+    function privateFunction(){
+        return false
+    }
+    // 特权/共有方法和属性
+    return {
+        publicProperty: true,
+        publicMethod(){
+            privateVariable++;
+            return privateFunction();
+        }
+    }
+}*/
+
+/*// 单例对象进行初始化，并且要访问私有变量时
+let app = function(){
+    // 私有变量和私有函数
+    let components = new Array()
+    components.push(new BaseComponent())
+    // 公共接口
+    return {
+        getComponentCount(){
+            return components.length;
+        },
+        registerComponent(component){
+            if(typeof  component == 'object'){
+                components.push(component)
+            }
+        }
+    }
+}*/
+
+
+/*// 对单例对象进行增强， 适用于需要特定类型的实例，
+// 但是又要增加额外的属性和方法的场景
+let singleton = function(){
+    // 私有变量和私有函数
+    let privateVariable = 10;
+    function privateFunction() {
+        return false;
+    }
+    // 创建对象
+    let object = new CustomType();
+    // 添加特权/共有属性和方法
+    object.publicProperty = true;
+    object.publicMethod = function() {
+        privateVariable++;
+        return privateFunction();
+    };
+    // 返回对象
+    return object
+}*/
+
+
+let application = function(){
+    // 私有变量和私有函数
+    let components = new Array()
+    components.push(new BaseComponent());
+    // 创建局部变量保存实例
+    let app = new BaseComponent();
+    // 公共接口
+    app.getComponentCount = function() {
+        return components.length;
+    };
+    app.registerComponent = function(component) {
+        if (typeof component == "object") {
+            components.push(component);
+        }
+    };
+    // 返回实例
+    return app;
+}()
 </script>
 </html>
