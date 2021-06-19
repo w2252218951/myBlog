@@ -60,6 +60,15 @@ module.exports = {
                         'Function/function',
                     ]
                 },
+                {
+                    title: '期约与异步函数',
+                    collapsable: true,
+                    children: [
+                        'Promise/',
+                        'Promise/promise',
+                        'Promise/asyncAwait',
+                    ]
+                },
             ],
             '/vue/': [
                 {

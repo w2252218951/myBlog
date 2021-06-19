@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+<script>
+/*
+function double(value, callback) {
+setTimeout(() => callback(value * 2), 1000);
+}
+double(3, (x) => console.log(x));
+*/
+
+
+/*// 异步失败处理
+function double(value,success, failed){
+    setTimeout(()=> {
+        try {
+            if(typeof  value !== 'number'){
+                throw 'Must provide number as first arg'
+            }
+            success(2 * value)
+        }catch (e){
+            failed(e)
+        }
+    }, 1000)
+}
+
+const successCallback = (x) => console.log(`Success:${x}`);
+const failedCallback = (x) => console.log(`Failed:${x}`);
+double(3, successCallback, failedCallback);
+double('a',successCallback, failedCallback)
+// Success:6   1000 毫秒后
+// Failed:Must provide number as first arg      1000 毫秒后*/
+
+// 嵌套异步操作
+function double(val, success, failed){
+    setTimeout(()=> {
+        try {
+            if(typeof val !== 'number'){
+                throw 'Must provide number as first arg'
+            }
+            success(2 * val)
+        }catch (e){
+            failed(e)
+        }
+    }, 1000)
+}
+const successCallback = (x) => {
+    double(x, (y)=> console.log(`Success:${y}`))
+}
+const failedCallback = (e) => console.log(`Failed:${e}`)
+double(3, successCallback, failedCallback)
+// Success:12
+</script>
+</html>
