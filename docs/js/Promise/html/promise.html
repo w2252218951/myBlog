@@ -530,7 +530,7 @@ p1.then(()=>
 // p4 executor（4 秒后）
 */
 
-// 将期约生成的代码提取到工厂函数中
+/*// 将期约生成的代码提取到工厂函数中
 function delayedResolve(str){
     return new Promise((resolve,reject)=> {
     console.log(str);
@@ -545,7 +545,218 @@ delayedResolve('p1 executor')
 // p1 executor（0 秒后）
 // p2 executor（1 秒后）
 // p3 executor（2 秒后）
-// p4 executor（3 秒后）
+// p4 executor（3 秒后）*/
+
+/*
+// 不使用期约的写法
+function delayedExecute(str,callback = null){
+    setTimeout(()=> {
+        console.log(str);
+        callback && callback()
+    },1000)
+}
+delayedExecute('p1 callback', ()=> {
+    delayedExecute('p2 callback', ()=> {
+        delayedExecute('p3 callback', ()=> {
+            delayedExecute('p4 callback')
+        })
+    })
+})
+// p1 callback（1 秒后）
+// p2 callback（2 秒后）
+// p3 callback（3 秒后）
+// p4 callback（4 秒后）
+*/
+
+
+/*
+// then() catch() finally() 都会返回新的期约
+let p = new Promise((resolve, reject)=> {
+    console.log('initial promise rejects')
+    reject()
+})
+p.catch(()=> console.log('reject handler'))
+.then(()=> console.log('resolve handler'))
+.finally(()=> console.log('finally handler') )
+*/
+
+/*// 期约图 因为一个期约有着多个处理程序，因此可以构建 有向非循环图结构  每个期约都是一个节点
+// 使用实例方法添加的处理程序都是一个有向顶点。
+//   A
+//  / \
+//  B C
+// /\ /\
+// D E F G
+
+let A = new Promise((resolve,reject)=> {
+    console.log('A');
+    resolve();
+})
+let B = A.then(()=> console.log('B'));
+let C = A.then(()=> console.log('C'));
+
+B.then(()=> console.log('D'))
+B.then(()=> console.log('E'))
+C.then(()=> console.log('F'))
+C.then(()=> console.log('G'))
+// A
+// B
+// C
+// D
+// E
+// F
+// G*/
+
+/*
+// Promise.all()静态方法创建的期约会在一组期约全部解决后再解决，接受的是可迭代数组，返回一个新期约
+let p1 = Promise.all([
+    Promise.resolve(3),
+    Promise.resolve(3)
+]);
+console.log(p1);
+// 可迭代对象中的元素会通过Promise.resolve()转换为期约
+let p2 = Promise.all([3,4])
+console.log(p2);
+// 空的可迭代对象等价于 Promise.resolve()
+let p3 = Promise.all([]);
+
+// 无效的语法
+let p4 = Promise.all();
+*/
+
+/*
+// 合成期约只有在所有期约都完成后才解决
+let p = Promise.all([
+    Promise.resolve(),
+    new Promise((resolve, reject)=> {
+        setTimeout(resolve,1000)
+    })
+])
+setTimeout(console.log,0, p) // Promise {<pending>}
+p.then(()=> setTimeout(console.log, 0 , 'all resolved'))
+// all resolved 1s 后
+setTimeout(console.log,1500, p)
+// Promise {<fulfilled>: Array(2)} 1.5s 后
+*/
+
+/*
+// 包含一个期约待定，则合成期约也是待定
+let p = Promise.all([
+    new Promise(()=> {})
+])
+setTimeout(console.log, 0, p1); // Promise <pending>
+*/
+
+/*
+// 如果包含一个期约拒绝，则合成期约也会拒绝
+let p = Promise.all([
+    Promise.resolve(),
+    Promise.reject(),
+    Promise.resolve()
+])
+setTimeout(console.log,0, p)
+// Promise {<rejected>: undefined}
+// // Uncaught (in promise) undefined
+*/
+
+
+/*// 所有期约都解决，则合成期约的解决值就是所有期约解决值得数组
+let p = Promise.all([
+    Promise.resolve(2),
+    Promise.resolve(),
+    Promise.resolve(3)
+])
+p.then((res)=> {
+console.log(res);
+// [2, undefined, 3]
+})*/
+
+/*
+// 如果有拒绝的期约，则第一拒绝期约的理由会成为合成期约的理由，并且后续的拒绝期约
+// 不会影响到最终期约的拒绝理由。合成期约会静默的处理所有包含期约的拒绝操作
+let p = Promise.all([
+    Promise.reject(3),
+    new Promise((resolve,reject)=> {
+        setTimeout(reject,1000)
+    }),
+    new Promise((resolve,reject)=> {
+        setTimeout(reject(4),1000)
+    })
+])
+p.catch((reason) => setTimeout(console.log, 0, reason)); // 3
+*/
+
+/*
+// Promise.race()静态方法创建一个包装对象，是一组对象中最先解决或拒绝的期约的镜像。
+// 接受可迭代对象，返回新对象
+let p1 = Promise.race([
+    Promise.resolve(),
+    Promise.resolve()
+])
+// 可迭代对象中的元素会通过 Promise.resolve转换为 期约
+let p2 = Promise.race([1,3])
+p2.then((res)=> console.log(res,'p2')) // 1
+
+// 空的可迭代对象 等价于 new Promise(()=> {})
+let p3 = Promise.race([])
+setTimeout(console.log,0, p3)
+// Promise {<pending>}
+// 无效的语法
+let p4 = Promise.race()
+// TypeError: cannot read Symbol.iterator of undefined
+*/
+
+
+/*
+// 只要是第一个状态落定的期约，Promise.race()就会包装解决值或拒绝理由然后返回新期约
+// 解决先发生，超时后的拒绝被忽略
+let p1 = Promise.race([
+    Promise.resolve(3),
+    new Promise((resolve,reject)=> setTimeout(reject, 1000))
+])
+setTimeout(console.log,0, p1)
+// Promise {<fulfilled>: 3}
+// 拒绝先发生，超时后的解决被忽略
+let p2 = Promise.race([
+    Promise.reject(4),
+    new Promise((resolve)=> setTimeout(resolve, 1000))
+])
+setTimeout(console.log, 0, p2)
+// Promise {<rejected>: 4}
+// 迭代顺序决定落定顺序
+let p3 = Promise.race([
+    Promise.resolve(5),
+    Promise.resolve(6),
+    Promise.resolve(7)
+])
+setTimeout(console.log, 0 , p3)
+// Promise {<fulfilled>: 5}
+*/
+
+/*// 与Promise.all()一样，合成期约会静默处理所有期约的拒绝操作
+let p = Promise.all([
+    Promise.reject(1),
+    new Promise((undefined,reject)=> setTimeout(reject, 1000))
+])
+p.catch(err=> {
+console.log(err);
+setTimeout(console.log, 0, err)
+})
+// 1
+// 1*/
+
+// 提取通用函数 将多个函数作为处理程序合成一个连续传值的期约连锁
+function addTwo(x) {return x + 2;}
+function addThree(x) {return x + 3;}
+function addFive(x) {return x + 5;}
+function compose(...fns){
+// 通过闭包的特性将参数传入
+// 初始化数据是一个期约 因此 promise 相当于一个期约
+return (x) =>  fns.reduce((promise, fn)=> promise.then(fn), Promise.resolve(x))
+}
+let addTen = compose(addTwo,addThree,addFive)
+// console.log(addTen);  // (x) => {}
+addTen(8).then(console.log) // 18
 </script>
 </body>
 </html>

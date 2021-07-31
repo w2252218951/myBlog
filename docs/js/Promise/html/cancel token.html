@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<button id="start">Start</button>
+<button id="cancel">Cancel</button>
+</body>
+<script>
+    class CancelToken {
+        constructor(cancelFn) {
+            this.promise = new Promise((resolve,reject)=> {
+                cancelFn(()=> {
+                    setTimeout(console.log, 0 ,'delay cancelled')
+                    resolve();
+                })
+            })
+        }
+    }
+    const startButton = document.querySelector('#start')
+    const cancelButton = document.querySelector('#cancel')
+    function cancellableDelayedResolved(delay){
+    let i = 1
+        setTimeout(console.log, 0, 'set delay')
+/*        return new Promise((resolve,reject)=> {
+            const id = setTimeout((()=> {
+                setTimeout(console.log, 0, 'delay resolve');
+                resolve()
+            }), delay)
+            const cancelToken = new CancelToken((cancelCallBack)=>
+                cancelButton.addEventListener('click',cancelCallBack))
+            cancelToken.promise.then(()=> clearTimeout(id))
+        }) */
+    return new Promise((resolve,reject)=> {
+            const id = setTimeout((()=> {
+                setTimeout(console.log, 0, 'delay resolve');
+                resolve()
+            }), delay)
+            const cancelToken = new CancelToken((cancelCallBack)=>
+                cancelButton.addEventListener('click',cancelCallBack))
+            cancelToken.promise.then(()=> clearTimeout(id))
+    console.log(i++);
+
+    })
+    }
+    startButton.addEventListener("click", () => cancellableDelayedResolved(3000));
+</script>
+</html>

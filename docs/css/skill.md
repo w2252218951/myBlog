@@ -99,11 +99,13 @@ date: 2021-03-23
 <img :src="$withBase('/cssImg/ellipsis.png')" alt="foo">
 
 ## 卡券效果制作
+
 ```html
 <p class="coupon">
     <span>200</span>优惠券
 </p>
 ```
+
 ```css
   .coupon {
         width: 300px;
@@ -127,10 +129,12 @@ date: 2021-03-23
         font-weight: 400;
     }
 ```
+
 效果:
 <img :src="$withBase('/cssImg/coupon.png')">
 
 ## 相邻兄弟选择器之常用场景
+
 ```html
 <ul>
     <li>1</li>
@@ -140,6 +144,7 @@ date: 2021-03-23
     <li>5</li>
 </ul>
 ```
+
 ```css
  ul{
         width: 300px;
@@ -153,16 +158,18 @@ date: 2021-03-23
         border-top:1px solid red ;
     }
 ```
+
 效果：
 <img :src="$withBase('/cssImg/brotherSelect.png')" >
 
-
 ## 纯CSS绘制三角形
+
 ```html
    <p class="box-model"></p>
     <p class="up-triangle"></p>
     <p class="down-triangle"></p>
 ```
+
 ```css
   *{
         margin: 0;
@@ -194,13 +201,16 @@ date: 2021-03-23
         margin-top: 1rem;
     }
 ```
+
 效果：
 <img :src="$withBase('/cssImg/triangle.png')">
 
 ## 虚线框绘制技巧
+
 ```html
 <p class="dotted-line">庭院深深，不知有多深？杨柳依依，飞扬起片片烟雾，一重重帘幕不知有多少层
 ```
+
 ```css
 .dotted-line {
         width: 800px;
@@ -210,14 +220,16 @@ date: 2021-03-23
         background: linear-gradient(white, white) padding-box, repeating-linear-gradient(-45deg, red 0, #ccc .25em, white 0, white .75em);
     }
 ```
+
 效果：
 <img :src="$withBase('/cssImg/dotted.png')">
 
-
 ## 设置input占位符样式
+
 ```html
 <input type="text" placeholder="设置用户名">
 ```
+
 ```css
  input::-webkit-input-placeholder{  /* Chrome/Opera/Safari */
         color:red;
@@ -239,15 +251,18 @@ date: 2021-03-23
         border:none;
     }
 ```
+
 效果：
 <img :src="$withBase('/cssImg/inputPlaceholder.png')">
 
 ## 隐藏滚动条或更改滚动条样式
+
 ```html
 <p class="scroll-container">
     庭院深深，不知有多深？杨柳依依，飞扬起片片烟雾，一重重帘幕不知有多少层。豪华的车马停在贵族公子寻欢作乐的地方，她登楼向远处望去，却看不见那通向章台的大路。春已至暮，三月的雨伴随着狂风大作，再是重门将黄昏景色掩闭，也无法留住春意。泪眼汪汪问落花可知道我的心意，落花默默不语，纷乱的，零零落落一点一点飞到秋千外。庭院深深，不知有多深？杨柳依依，飞扬起片片烟雾，一重重帘幕不知有多少层。豪华的车马停在贵族公子寻欢作乐的地方，她登楼向远处望去，却看不见那通向章台的大路。春已至暮，三月的雨伴随着狂风大作，再是重门将黄昏景色掩闭，也无法留住春意。泪眼汪汪问落花可知道我的心意，落花默默不语，纷乱的，零零落落一点一点飞到秋千外。庭院深深，不知有多深？杨柳依依，飞扬起片片烟雾，一重重帘幕不知有多少层。豪华的车马停在贵族公子寻欢作乐的地方，她登楼向远处望去，却看不见那通向章台的大路。春已至暮，三月的雨伴随着狂风大作，再是重门将黄昏景色掩闭，也无法留住春意。泪眼汪汪问落花可知道我的心意，落花默默不语，纷乱的，零零落落一点一点飞到秋千外。庭院深深，不知有多深？杨柳依依，飞扬起片片烟雾，一重重帘幕不知有多少层。豪华的车马停在贵族公子寻欢作乐的地方，她登楼向远处望去，却看不见那通向章台的大路。春已至暮，三月的雨伴随着狂风大作，再是重门将黄昏景色掩闭，也无法留住春意。泪眼汪汪问落花可知道我的心意，落花默默不语，纷乱的，零零落落一点一点飞到秋千外。
 </p>
 ```
+
 ```css
  .scroll-container{
         width: 300px;
@@ -276,5 +291,54 @@ date: 2021-03-23
         background-color: #00adb5;
     }
 ```
+
 效果：
 <img :src="$withBase('/cssImg/scroll.png')">
+
+### 基于伪元素的图片内容生成技术
+
+p52 4/1-2
+
+原理：`FireFox`在没有替换内容并且`Chrome`在此基础上有不为空的`alt`属性值，那么替换元素就会被当做**内联标签**
+
+想要该特性生效的技术点
+
+1. 不能有`src`属性（关键点所在）
+
+2. 不能使用`content`属性生成图片；（`chrome`）
+
+3. 需要拥有`alt`属性并有值； （`chrome`）
+
+4. `Firefox`下：`before`伪元素的`content`值会被无视，`after`无此问题。
+
+核心代码
+
+```css
+img:after: {
+    /*生成的alt信息*/
+    content: attr(alt);
+    /*尺寸和定位*/
+    position: absolute; bottom:0;
+    width: 100%;
+    background-color:rgba(0,0,0,0.5);
+    transform: translateY(100%);
+    /* 动效*/
+    transition: transform .2s
+}
+img:hover::after{
+    transform,: translateY(100%)
+}
+```
+
+### 通过`hover`改变图片效果
+
+```html
+<img src='laugh.png'>
+<style>
+    img:hover{
+         content: url(laugh-tear.png)
+    }
+</style>
+```
+
+该方法仅仅只是改变了视觉呈现，其`src`并没有改变

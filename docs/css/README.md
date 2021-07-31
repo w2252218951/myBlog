@@ -68,4 +68,10 @@ date: 2021-03-26
    
    4. `animation`动画；
 
+**字体换行：** `white-space:nowrap`
+
+<mark>**所谓流动性** ，是一种`margin/border/padding/content`内容区域自动分配水平空间机制</mark>
+
+
+
 

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+</body>
+<script>
+/*/!*    // 当程序中的其他代码需要在这个值可用是进行访问，则需要设置解决处理程序
+    let p = new Promise((resolve,reject)=> setTimeout(resolve,1000, 3))
+    p.then((x)=> console.log(x)) // 3*!/
+// 当程序中的其他代码需要在这个值可用是进行访问，则需要设置解决处理程序
+function handler(x) { console.log(x); }
+let p = new Promise((resolve, reject) => setTimeout(resolve, 1000, 3));
+p.then(handler); // 3*/
+
+/*// async 关键词用法
+async function  p1(){}
+let p2 = async function(){}
+let p3 = async ()=> {}
+class p4  {
+    async qux(){}
+}*/
+
+
+/*
+// async 关键词可以让函数具有异步特性 但是其代码还是同步执行的
+// 并且在参数和闭包方面任具有普通函数的正常行为
+async function foo(){
+    console.log(1);
+}
+foo()
+console.log(2);
+// 1
+// 2
+*/
+
+/*// 异步函数始终返回一个期约对象，如果是用return关键词则返回这个 promise.resolve 关键词包装的对象
+// 没有return 则返回 undefined
+async function foo(){
+    console.log(1);
+    return 3
+}
+foo().then(res=> console.log(res))
+console.log(2);
+// 1
+// 2
+// 3*/
+
+/*// 返回一个原始值
+async function foo() {
+    return 'foo';
+}
+foo().then(console.log);
+// foo
+// 返回一个没有实现 thenable 接口的对象
+async function bar() {
+    return ['bar'];
+}
+bar().then(console.log);
+// ['bar']
+// 返回一个实现了 thenable 接口的非期约对象
+async function baz() {
+    const thenable = {
+    then(callback) { callback('baz'); }
+};
+return thenable;
+}
+baz().then(console.log);
+// baz*/
+
+/*// await 可以暂停异步函数的执行，等待期约解决
+let p = new Promise.resolve((resolve,reject)=> setTimeout(console.log,1000, 3))
+p.then((x)=> console.log(x)) // 3*/
+
+/*// 通过 async/await 可以写成
+async function foo(){
+    let p = new Promise((resolve,reject)=> {
+        setTimeout(resolve,1000,3)
+    })
+    // 暂停异步函数 等待期约解决
+    console.log(await p)
+}
+foo() // 3s后 3*/
+
+/*
+// await 使用场景
+async function foo(){
+    console.log(await Promise.resolve('foo'))
+}
+foo() // foo
+
+
+async function bar(){
+    // 此时相当于 返回的是 Promise.resolve('bar')
+    return await Promise.resolve('bar')
+}
+bar().then(console.log) // bar
+
+async function baz(){
+    // 暂停异步代码的执行，等到期约解决后再执行
+    await new Promise((resolve,reject)=> setTimeout(resolve,1000))
+    console.log('baz')
+}
+baz() // baz（1000 毫秒后
+*/
+/*
+// 如果是实现thenable接口的对象，则这个对象可以由await解包，如果不是就返回已解决的期约
+// 等待一个原始值
+async function foo() {
+    console.log(await 'foo');
+}
+foo();
+// foo
+// 等待一个没有实现 thenable 接口的对象
+async function bar() {
+    console.log(await ['bar']);
+}
+bar()
+// ['bar']
+
+// 等待一个实现了 thenable 接口的非期约对象
+async function baz() {
+const thenable = {
+    then(callback) { callback('baz'); }
+    };
+    console.log(await thenable);
+}
+baz();
+// baz
+// 等待一个期约
+async function qux() {
+console.log(await Promise.resolve('qux'));
+}
+qux();
+// qux*/
+
+
+/*// 等待会抛出错误的同步操作，会返回拒绝的期约
+async function foo(){
+    console.log(1);
+    await (()=> {throw  3})()
+}
+// 给返回的期约添加一个拒绝处理程序
+foo().catch(err => console.log(err))
+console.log(2);
+
+// 1
+// 2
+// 3*/
+
+/*async function foo(){
+    console.log(1);
+     Promise.reject(3)
+    console.log(4);
+}
+foo().catch(console.log)
+console.log(2);
+// 1
+// 2
+// 3*/
+
+/*// await 关键词必须在异步函数中使用 ，不能在顶级上下文中使用，但是能通过IIFE使用
+async function foo(){
+    console.log(await Promise.resolve(3))
+}
+foo()
+// 3
+// 相当于
+    (async function(){
+        console.log(await Promise.resolve(3))
+
+    })()
+// 3*/
+
+/*
+// 异步函数的特性是不会扩展到嵌套函数，同时await也只能直接在异步函数中定义
+// 不允许 await 出现在 箭头函数中
+function foo(){
+    const syncFn = ()=> {
+        return await Promise.resolve('foo')
+    }
+console.log(syncFn());
+    //Uncaught SyntaxError: await is only valid in async functions and the top level bodies of modules
+}
+// 不允许await 出现在同步函数声明中
+function bar(){
+    function syncFn(){
+        return await Promise.resolve('bar')
+    }
+    console.log(syncFn());
+
+}
+// 不允许await出现在同步函数表达式中
+function bar(){
+    const syncFn = function(){
+        return await Promise.resolve(3)
+    }
+    console.log(syncFn());
+}
+// 不允许： IIFE使用同步函数表达式或者箭头函数
+function qux(){
+    (function() {console.log(await Promise.resolve('qux'))})()
+    (()=> console.log(await Promise.resolve('qux')))()
+}
+*/
+
+
+/*async function foo() {
+    console.log(await Promise.resolve('foo'));
+}
+async function bar() {
+    console.log(await 'bar');
+}
+async function baz() {
+    console.log('baz');
+}
+foo();
+bar();
+baz();
+// baz
+// bar
+// foo*/
+
+/*// async 仅仅是个表示符 如果异步函数没有await，则执行上和普通函数没什么区别
+async function foo(){
+    console.log(2);
+}
+console.log(1);
+foo()
+console.log(3);
+// 1
+// 2
+// 3*/
+
+/*
+// js运行时在遇到await关键字时，会记录在哪儿暂停执行，等到await右边的求值完，
+// 再向消息队列推送一个任务，用以恢复异步函数的执行。
+async function foo() {
+    console.log(2);
+    await null;
+    console.log(4);
+}
+console.log(1);
+foo();
+console.log(3);
+// 1
+// 2
+// 3
+// 4
+*/
+
+/*async function foo(){
+    console.log(2);
+    console.log(await Promise.resolve(8))
+    console.log(9)
+}
+async function bar(){
+    console.log(4);
+    console.log(await 6);
+    console.log(7)
+}
+
+console.log(1);
+foo();
+console.log(3);
+bar();
+console.log(5);
+// 123458967*/
+
+// 通过异步韩式实现 sleep()方法
+function sleep(delay){
+    return new Promise((resolve,reject)=> setTimeout(resolve, delay))
+}
+async function foo(){
+    const t0 = Date.now();
+    // 通过await 等待期约的解决 然后在恢复异步函数的执行
+    await sleep(1500);
+    console.log(Date.now() - t0)
+    // 1501
+}
+foo()
+
+</script>
+</html>
