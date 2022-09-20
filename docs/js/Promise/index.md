@@ -1,15 +1,12 @@
-`--- 
-
+---
 title: 异步编程
-tags: 
-
+tags:
 - js
 - promise
-  categories:
+categories:
 - 笔记
-  date: 2021-05-19
-
----`
+date: 2021-05-19
+---
 
 `ES6`新增了正式的`Promise(期约)`引用类型，支持优雅的定义和组织异步逻辑。
 

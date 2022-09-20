@@ -9,7 +9,7 @@ date: 2021-03-30
 
 ## padding与元素尺寸之间的关系
 
-<mark>内联元素的`padding`在垂直方向会影响布局，影响视觉表现</mark>
+<mark>内联元素的`padding`在垂直方向同样会影响布局，影响视觉表现</mark>
 
 垂直方向的行为受`line-height`和`vertical-align`影响。
 
@@ -152,8 +152,6 @@ date: 2021-03-30
 
 2. 通过决对定位元素的`margin:auto`居中
 
-
-
 ### margin无效情形解析
 
 p97
@@ -174,6 +172,6 @@ p97
    
    <mark>默认流下：定位方向是**左侧及上方**，可以通过`margin-left、margin-top`</mark>
 
-6.  鞭长莫及导致的`margin`无效
+6. 鞭长莫及导致的`margin`无效
 
 7. 内联特性导致的`margin`无效

@@ -12,13 +12,13 @@ module.exports = {
         },
         nav: [
             {text: '主页', link: '/'},
-            {text: '心得', link: '/experience/utils'},
+            {text: '心得', link: '/Experience/utils'},
             {
                 text: '博客', items: [
                     {text: 'JS', link: '/js/'},
                     {text: 'HTML', link: '/html/'},
                     {text: 'CSS', link: '/css/'},
-                    {text: 'Vue', link: '/vue/experience/keepAlive'},
+                    {text: 'Vue', link: '/vue/'},
                 ]
             },
             {text: '关于', link: '../about'}
@@ -56,8 +56,15 @@ module.exports = {
                     title: '函数',
                     collapsable: true,
                     children: [
-                        'Function/',
+                        'Function/index',
                         'Function/function',
+                    ]
+                },
+                {
+                    title: '小知识',
+                    collapsable: true,
+                    children: [
+                        'LittleKnowledge/js',
                     ]
                 },
                 {
@@ -75,12 +82,34 @@ module.exports = {
                     title: '心得',
                     collapsable: true,
                     children: [
-                        'experience/keepAlive',
+                        'Experience/keepAlive',
+                    ]
+                },
+                {
+                    title: '源码',
+                    collapsable: true,
+                    children: [
+                        'SourceCode/vue源码',
+                        'SourceCode/虚拟DOM',
+                    ]
+                },
+            ],
+            '/webpack/': [
+                {
+                    title: 'webpack',
+                    collapsable: true,
+                    children: [
+                        'webpack/webpack基础',
                     ]
                 },
             ],
             '/css/': [
                 '',
+                'border属性',
+                'paddingAndMargin',
+                '流、元素与基本尺寸',
+                '流的破坏和保护',
+                '深入理解content',
                 'skill'
             ],
             '/experience/': [
